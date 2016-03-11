@@ -30,19 +30,23 @@ public class PlayerProcessor implements IEntityProcessor
 
         if (ActionHandler.isActive(Action.MOVE_DOWN))
         {
-
+            vel.setDx(0);
+            vel.setDy(-1);
         }
         if (ActionHandler.isActive(Action.MOVE_UP))
         {
-
+            vel.setDx(0);
+            vel.setDy(1);
         }
         if (ActionHandler.isActive(Action.MOVE_RIGHT))
         {
-
+            vel.setDx(1);
+            vel.setDy(0);
         }
         if (ActionHandler.isActive(Action.MOVE_LEFT))
         {
-
+            vel.setDx(-1);
+            vel.setDy(0);
         }
     }
 
