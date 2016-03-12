@@ -149,7 +149,7 @@ public class MapGenerator
         Entity wall = new Entity();
         wall.setType(EntityType.WALL);
 
-        wall.add(pos);
+        wall.add(new Position(pos.getX(), pos.getY()));
         wall.add(new Body(_wallSize));
 
         return wall;
