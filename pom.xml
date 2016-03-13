@@ -62,7 +62,6 @@
         <module>Engine</module>
         <module>SilentUpdate</module>
         <module>ModuleBuilder</module>
-        <module>Collision</module>
     </modules>
 
     <properties>
