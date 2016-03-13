@@ -10,7 +10,7 @@ import dk.gruppesex.bodtrd.common.data.EntityType;
 import dk.gruppesex.bodtrd.common.data.GameData;
 import dk.gruppesex.bodtrd.common.data.entityelements.Body;
 import dk.gruppesex.bodtrd.common.data.entityelements.Position;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -29,7 +29,7 @@ public class MapGenerator
     private static int _pathDown = 60;
     private static int _pathLeft = 80;
 
-    public static void GenerateMap(List<Entity> walls, GameData gameData)
+    public static void GenerateMap(ArrayList<Entity> walls, GameData gameData)
     {
         int mapWidth = gameData.getMapWidth();
         int mapHeight = gameData.getMapHeight();
@@ -132,7 +132,7 @@ public class MapGenerator
         }
     }
 
-    private static boolean CheckValidWall(Position newWallPos, List<Entity> walls)
+    private static boolean CheckValidWall(Position newWallPos, ArrayList<Entity> walls)
     {
         for (Entity w : walls)
         {

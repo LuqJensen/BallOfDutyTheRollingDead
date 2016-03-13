@@ -9,6 +9,7 @@ import dk.gruppesex.bodtrd.common.data.Entity;
 import dk.gruppesex.bodtrd.common.data.GameData;
 import dk.gruppesex.bodtrd.common.interfaces.IEntityProcessor;
 import dk.gruppesex.bodtrd.common.services.GamePluginSPI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +19,8 @@ import java.util.Map;
  */
 public class MapPlugin implements GamePluginSPI
 {
-    private Map<Integer, Entity> _world;
-    private GameData _gameData;
-    private List<Entity> _walls;
+    private java.util.Map<Integer, Entity> _world;
+    private ArrayList<Entity> _walls;
 
     @Override
     public void stop()
@@ -34,10 +34,7 @@ public class MapPlugin implements GamePluginSPI
     @Override
     public void start(GameData gameData, Map<Integer, Entity> world, List<IEntityProcessor> processors)
     {
-        Installer.Plugin = this;
-        _gameData = gameData;
         this._world = world;
-
         MapGenerator.GenerateMap(_walls, gameData);
         for (Entity wall : _walls)
         {
