@@ -5,6 +5,8 @@
  */
 package dk.gruppesex.bodtrd.common.data;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
  * @author Morten
@@ -12,37 +14,29 @@ package dk.gruppesex.bodtrd.common.data;
 public class ActionHandler
 {
 
-    private static boolean[] keys;
-    private static boolean[] pkeys;
-
-    private static final int NUM_ACTIONS = 7;
-
-    static
-    {
-        keys = new boolean[NUM_ACTIONS];
-        pkeys = new boolean[NUM_ACTIONS];
-    }
+    private static ConcurrentHashMap<Action, Boolean> keys = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<Action, Boolean> pkeys = new ConcurrentHashMap<>();
 
     public static void update()
     {
-        for (int i = 0; i < NUM_ACTIONS; i++)
+        for (java.util.Map.Entry<Action, Boolean> entry : keys.entrySet())
         {
-            pkeys[i] = keys[i];
+            pkeys.put(entry.getKey(), entry.getValue());
         }
     }
 
-    public static void setActionActive(int k, boolean b)
+    public static void setAction(Action action, boolean b)
     {
-        keys[k] = b;
+        keys.put(action, b);
     }
 
-    public static boolean isACtionDown(int k)
+    public static boolean isActive(Action action)
     {
-        return keys[k];
+        return keys.get(action);
     }
 
-    public static boolean isActionPressed(int k)
+    public static boolean isToggled(Action action)
     {
-        return keys[k] && !pkeys[k];
+        return keys.get(action) && !pkeys.get(action);
     }
 }

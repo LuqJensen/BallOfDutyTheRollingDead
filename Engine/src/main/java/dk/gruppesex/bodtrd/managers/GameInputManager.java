@@ -28,35 +28,27 @@ public class GameInputManager extends InputAdapter
     {
         if (k == Keys.UP)
         {
-            gameData.getKeys().setKey(Action.MOVE_UP, true);
+            gameData.getKeys().setAction(Action.MOVE_UP, true);
         }
         if (k == Keys.LEFT)
         {
-            gameData.getKeys().setKey(GameKeys.LEFT, true);
+            gameData.getKeys().setAction(Action.MOVE_LEFT, true);
         }
         if (k == Keys.DOWN)
         {
-            gameData.getKeys().setKey(GameKeys.DOWN, true);
+            gameData.getKeys().setAction(Action.MOVE_DOWN, true);
         }
         if (k == Keys.RIGHT)
         {
-            gameData.getKeys().setKey(GameKeys.RIGHT, true);
-        }
-        if (k == Keys.ENTER)
-        {
-            gameData.getKeys().setKey(GameKeys.ENTER, true);
+            gameData.getKeys().setAction(Action.MOVE_RIGHT, true);
         }
         if (k == Keys.ESCAPE)
         {
-            gameData.getKeys().setKey(GameKeys.ESCAPE, true);
+            gameData.getKeys().setAction(Action.PAUSE_MENU, true);
         }
         if (k == Keys.SPACE)
         {
-            gameData.getKeys().setKey(GameKeys.SPACE, true);
-        }
-        if (k == Keys.SHIFT_LEFT || k == Keys.SHIFT_RIGHT)
-        {
-            gameData.getKeys().setKey(GameKeys.SHIFT, true);
+            gameData.getKeys().setAction(Action.SHOOT, true);
         }
         return true;
     }
@@ -65,35 +57,27 @@ public class GameInputManager extends InputAdapter
     {
         if (k == Keys.UP)
         {
-            gameData.getKeys().setKey(GameKeys.UP, false);
+            gameData.getKeys().setAction(Action.MOVE_UP, false);
         }
         if (k == Keys.LEFT)
         {
-            gameData.getKeys().setKey(GameKeys.LEFT, false);
+            gameData.getKeys().setAction(Action.MOVE_LEFT, false);
         }
         if (k == Keys.DOWN)
         {
-            gameData.getKeys().setKey(GameKeys.DOWN, false);
+            gameData.getKeys().setAction(Action.MOVE_DOWN, false);
         }
         if (k == Keys.RIGHT)
         {
-            gameData.getKeys().setKey(GameKeys.RIGHT, false);
-        }
-        if (k == Keys.ENTER)
-        {
-            gameData.getKeys().setKey(GameKeys.ENTER, false);
+            gameData.getKeys().setAction(Action.MOVE_RIGHT, false);
         }
         if (k == Keys.ESCAPE)
         {
-            gameData.getKeys().setKey(GameKeys.ESCAPE, false);
+            gameData.getKeys().setAction(Action.PAUSE_MENU, false);
         }
         if (k == Keys.SPACE)
         {
-            gameData.getKeys().setKey(GameKeys.SPACE, false);
-        }
-        if (k == Keys.SHIFT_LEFT || k == Keys.SHIFT_RIGHT)
-        {
-            gameData.getKeys().setKey(GameKeys.SHIFT, false);
+            gameData.getKeys().setAction(Action.SHOOT, false);
         }
         return true;
     }
