@@ -26,6 +26,7 @@ public class PlayerProcessor implements IEntityProcessor
     public void process(GameData gameData, Map<Integer, Entity> world)
     {
         Position pos = _player.get(Position.class);
+        gameData.setPlayerPosition(pos);
         Velocity vel = _player.get(Velocity.class);
 
         if (ActionHandler.isActive(Action.MOVE_DOWN))

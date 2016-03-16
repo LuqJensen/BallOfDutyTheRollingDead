@@ -5,25 +5,44 @@
  */
 package dk.gruppesex.bodtrd.common.data;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  *
  * @author Morten
  */
 public class ActionHandler
 {
-    private static Map<Action, Boolean> _actions = new ConcurrentHashMap();
 
-    public static void setActive(Action action, boolean active)
+    private static boolean[] keys;
+    private static boolean[] pkeys;
+
+    private static final int NUM_ACTIONS = 7;
+
+    static
     {
-        _actions.put(action, active);
+        keys = new boolean[NUM_ACTIONS];
+        pkeys = new boolean[NUM_ACTIONS];
     }
 
-    public static boolean isActive(Action action)
+    public static void update()
     {
-        Boolean val = _actions.get(action);
-        return val != null && val;
+        for (int i = 0; i < NUM_ACTIONS; i++)
+        {
+            pkeys[i] = keys[i];
+        }
+    }
+
+    public static void setActionActive(int k, boolean b)
+    {
+        keys[k] = b;
+    }
+
+    public static boolean isACtionDown(int k)
+    {
+        return keys[k];
+    }
+
+    public static boolean isActionPressed(int k)
+    {
+        return keys[k] && !pkeys[k];
     }
 }

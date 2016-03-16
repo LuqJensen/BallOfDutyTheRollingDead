@@ -24,6 +24,13 @@ public class GameData
 
     private Position _playerPosition;
 
+    private final ActionHandler keys = new ActionHandler();
+
+    public ActionHandler getKeys()
+    {
+        return keys;
+    }
+
     public Position getPlayerPosition()
     {
         return _playerPosition;
