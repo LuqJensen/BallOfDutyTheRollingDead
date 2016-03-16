@@ -12,15 +12,18 @@ import dk.gruppesex.bodtrd.common.services.GamePluginSPI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author lucas
  */
+@ServiceProvider(service = GamePluginSPI.class)
 public class MapPlugin implements GamePluginSPI
 {
-    private java.util.Map<Integer, Entity> _world;
-    private ArrayList<Entity> _walls;
+    private Map<Integer, Entity> _world;
+    private GameData _gameData;
+    private List<Entity> _walls = new ArrayList<>();
 
     @Override
     public void stop()
@@ -34,7 +37,12 @@ public class MapPlugin implements GamePluginSPI
     @Override
     public void start(GameData gameData, Map<Integer, Entity> world, List<IEntityProcessor> processors)
     {
+        Installer.Plugin = this;
+        _gameData = gameData;
+        gameData.setMapWidth(4096);
+        gameData.setMapHeight(4096);
         this._world = world;
+
         MapGenerator.GenerateMap(_walls, gameData);
         for (Entity wall : _walls)
         {

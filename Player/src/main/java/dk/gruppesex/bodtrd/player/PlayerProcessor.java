@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class PlayerProcessor implements IEntityProcessor
 {
-    Entity _player;
+    private Entity _player;
 
     public PlayerProcessor(Entity player)
     {

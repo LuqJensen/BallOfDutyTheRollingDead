@@ -14,17 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ActionHandler
 {
-
-    private static Map<Action, Boolean> actions = new ConcurrentHashMap();
+    private static Map<Action, Boolean> _actions = new ConcurrentHashMap();
 
     public static void setActive(Action action, boolean active)
     {
-        actions.put(action, active);
+        _actions.put(action, active);
     }
 
     public static boolean isActive(Action action)
     {
-        return actions.get(action);
+        Boolean val = _actions.get(action);
+        return val != null && val;
     }
-
 }

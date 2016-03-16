@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dk.gruppesex.bodtrd.common.services;
+package dk.gruppesex.bodtrd.common.data;
 
 /**
  *
- * @author lucas
+ * @author frede
  */
-public interface GameStateSPI
+public enum GameState
 {
-
+    PLAY, PAUSE_MENU, MAIN_MENU, SHOP_MENU
 }

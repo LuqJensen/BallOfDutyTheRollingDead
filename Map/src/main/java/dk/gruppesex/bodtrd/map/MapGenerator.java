@@ -10,7 +10,7 @@ import dk.gruppesex.bodtrd.common.data.EntityType;
 import dk.gruppesex.bodtrd.common.data.GameData;
 import dk.gruppesex.bodtrd.common.data.entityelements.Body;
 import dk.gruppesex.bodtrd.common.data.entityelements.Position;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -19,7 +19,6 @@ import java.util.Random;
  */
 public class MapGenerator
 {
-
     private static Random _rand = new Random(); // TODO needs to be able to pick seed
     private static int _wallAmount = 50;
     private static int _wallSize = 50;
@@ -29,10 +28,10 @@ public class MapGenerator
     private static int _pathDown = 60;
     private static int _pathLeft = 80;
 
-    public static void GenerateMap(ArrayList<Entity> walls, GameData gameData)
+    public static void GenerateMap(List<Entity> walls, GameData gameData)
     {
-        int mapWidth = gameData.getWidth();
-        int mapHeight = gameData.getHeight();
+        int mapWidth = gameData.getMapWidth();
+        int mapHeight = gameData.getMapHeight();
         int mapGridX = mapWidth / _wallSize;
         int mapGridY = mapHeight / _wallSize;
 
@@ -132,7 +131,7 @@ public class MapGenerator
         }
     }
 
-    private static boolean CheckValidWall(Position newWallPos, ArrayList<Entity> walls)
+    private static boolean CheckValidWall(Position newWallPos, List<Entity> walls)
     {
         for (Entity w : walls)
         {
@@ -149,7 +148,8 @@ public class MapGenerator
         Entity wall = new Entity();
         wall.setType(EntityType.WALL);
 
-        wall.add(pos);
+        // Position is pass by reference and thus we must copy its values. Otherwise all Walls will have the same position.
+        wall.add(new Position(pos.getX(), pos.getY()));
         wall.add(new Body(_wallSize));
 
         return wall;
