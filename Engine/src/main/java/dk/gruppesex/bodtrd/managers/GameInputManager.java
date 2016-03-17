@@ -8,6 +8,7 @@ package dk.gruppesex.bodtrd.managers;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import dk.gruppesex.bodtrd.common.data.Action;
+import dk.gruppesex.bodtrd.common.data.ActionHandler;
 import dk.gruppesex.bodtrd.common.data.GameData;
 
 /**
@@ -26,58 +27,57 @@ public class GameInputManager extends InputAdapter
     @Override
     public boolean keyDown(int k)
     {
-        if (k == Keys.UP)
+        switch (k)
         {
-            gameData.getKeys().setAction(Action.MOVE_UP, true);
-        }
-        if (k == Keys.LEFT)
-        {
-            gameData.getKeys().setAction(Action.MOVE_LEFT, true);
-        }
-        if (k == Keys.DOWN)
-        {
-            gameData.getKeys().setAction(Action.MOVE_DOWN, true);
-        }
-        if (k == Keys.RIGHT)
-        {
-            gameData.getKeys().setAction(Action.MOVE_RIGHT, true);
-        }
-        if (k == Keys.ESCAPE)
-        {
-            gameData.getKeys().setAction(Action.PAUSE_MENU, true);
-        }
-        if (k == Keys.SPACE)
-        {
-            gameData.getKeys().setAction(Action.SHOOT, true);
+            case Keys.UP:
+                ActionHandler.setAction(Action.MOVE_UP, true);
+            case Keys.DOWN:
+                ActionHandler.setAction(Action.MOVE_DOWN, true);
+            case Keys.LEFT:
+                ActionHandler.setAction(Action.MOVE_LEFT, true);
+            case Keys.RIGHT:
+                ActionHandler.setAction(Action.MOVE_RIGHT, true);
+            case Keys.W:
+                ActionHandler.setAction(Action.MOVE_UP, true);
+            case Keys.S:
+                ActionHandler.setAction(Action.MOVE_DOWN, true);
+            case Keys.A:
+                ActionHandler.setAction(Action.MOVE_LEFT, true);
+            case Keys.D:
+                ActionHandler.setAction(Action.MOVE_RIGHT, true);
+            case Keys.ESCAPE:
+                ActionHandler.setAction(Action.PAUSE_MENU, true);
+            case Keys.SPACE:
+                ActionHandler.setAction(Action.SHOOT, true);
         }
         return true;
     }
 
+    @Override
     public boolean keyUp(int k)
     {
-        if (k == Keys.UP)
+        switch (k)
         {
-            gameData.getKeys().setAction(Action.MOVE_UP, false);
-        }
-        if (k == Keys.LEFT)
-        {
-            gameData.getKeys().setAction(Action.MOVE_LEFT, false);
-        }
-        if (k == Keys.DOWN)
-        {
-            gameData.getKeys().setAction(Action.MOVE_DOWN, false);
-        }
-        if (k == Keys.RIGHT)
-        {
-            gameData.getKeys().setAction(Action.MOVE_RIGHT, false);
-        }
-        if (k == Keys.ESCAPE)
-        {
-            gameData.getKeys().setAction(Action.PAUSE_MENU, false);
-        }
-        if (k == Keys.SPACE)
-        {
-            gameData.getKeys().setAction(Action.SHOOT, false);
+            case Keys.UP:
+                ActionHandler.setAction(Action.MOVE_UP, false);
+            case Keys.DOWN:
+                ActionHandler.setAction(Action.MOVE_DOWN, false);
+            case Keys.LEFT:
+                ActionHandler.setAction(Action.MOVE_LEFT, false);
+            case Keys.RIGHT:
+                ActionHandler.setAction(Action.MOVE_RIGHT, false);
+            case Keys.W:
+                ActionHandler.setAction(Action.MOVE_UP, false);
+            case Keys.S:
+                ActionHandler.setAction(Action.MOVE_DOWN, false);
+            case Keys.A:
+                ActionHandler.setAction(Action.MOVE_LEFT, false);
+            case Keys.D:
+                ActionHandler.setAction(Action.MOVE_RIGHT, false);
+            case Keys.ESCAPE:
+                ActionHandler.setAction(Action.PAUSE_MENU, false);
+            case Keys.SPACE:
+                ActionHandler.setAction(Action.SHOOT, false);
         }
         return true;
     }
