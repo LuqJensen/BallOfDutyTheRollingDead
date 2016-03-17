@@ -5,8 +5,8 @@
  */
 package dk.gruppesex.bodtrd.common.data;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Entity
 {
-    private Map<Class<?>, Object> data = new HashMap<>();
+    private Map<Class<?>, Object> data = new ConcurrentHashMap<>();
     private int _ID;
     private static AtomicInteger _count = new AtomicInteger(0);
     private EntityType _type;

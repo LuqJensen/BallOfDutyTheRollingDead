@@ -3,8 +3,10 @@ package dk.gruppesex.bodtrd.player;
 import dk.gruppesex.bodtrd.common.data.Entity;
 import dk.gruppesex.bodtrd.common.data.EntityType;
 import dk.gruppesex.bodtrd.common.data.GameData;
+import dk.gruppesex.bodtrd.common.data.entityelements.Body;
 import dk.gruppesex.bodtrd.common.data.entityelements.Position;
 import dk.gruppesex.bodtrd.common.data.entityelements.Velocity;
+import dk.gruppesex.bodtrd.common.data.entityelements.View;
 import dk.gruppesex.bodtrd.common.interfaces.IEntityProcessor;
 import dk.gruppesex.bodtrd.common.services.GamePluginSPI;
 import java.util.List;
@@ -51,11 +53,16 @@ public class PlayerPlugin implements GamePluginSPI
 
     private Entity createPlayerEntity()
     {
+
         Entity entity = new Entity();
         entity.setType(EntityType.PLAYER);
-        entity.add(new Position(0, 0));
+        entity.add(new Position(200, 100));
+        entity.add(new Body(50, 50));
         entity.add(new Velocity());
+
+        entity.add(new View("../../../Player/src/main/java/dk/gruppesex/bodtrd/player/assets/ball_red.png"));
         return entity;
+
     }
 
 }

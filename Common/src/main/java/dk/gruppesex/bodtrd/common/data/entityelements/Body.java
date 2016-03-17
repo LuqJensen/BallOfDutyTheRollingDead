@@ -11,21 +11,34 @@ package dk.gruppesex.bodtrd.common.data.entityelements;
  */
 public class Body
 {
-    private int _size;
+    private int _height;
+    private int _width;
 
-    public Body(int size)
+    public Body(int height, int width)
     {
-        this._size = size;
+        _height = height;
+        _width = width;
+
     }
 
-    public int getSize()
+    public int getHeight()
     {
-        return _size;
+        return _height;
     }
 
-    public void setSize(int size)
+    public void setHeight(int height)
     {
-        this._size = size;
+        this._height = height;
+    }
+
+    public int getWidth()
+    {
+        return _width;
+    }
+
+    public void setWidth(int width)
+    {
+        this._width = width;
     }
 
 }

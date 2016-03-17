@@ -37,13 +37,14 @@ public class MapPlugin implements GamePluginSPI
     @Override
     public void start(GameData gameData, Map<Integer, Entity> world, List<IEntityProcessor> processors)
     {
+
         Installer.Plugin = this;
         _gameData = gameData;
         gameData.setMapWidth(4096);
         gameData.setMapHeight(4096);
         this._world = world;
 
-        MapGenerator.GenerateMap(_walls, gameData);
+        MapGenerator.generateMap(_walls, gameData);
         for (Entity wall : _walls)
         {
             world.put(wall.getID(), wall);
