@@ -11,7 +11,6 @@ import dk.gruppesex.bodtrd.common.data.GameData;
 import dk.gruppesex.bodtrd.common.data.entityelements.Body;
 import dk.gruppesex.bodtrd.common.data.entityelements.Position;
 import dk.gruppesex.bodtrd.common.data.entityelements.View;
-import java.io.File;
 import java.util.List;
 import java.util.Random;
 
@@ -154,7 +153,7 @@ public class MapGenerator
         // Position is pass by reference and thus we must copy its values. Otherwise all Walls will have the same position.
         wall.add(new Position(pos.getX(), pos.getY()));
         wall.add(new Body(WALL_SIZE, WALL_SIZE));
-        wall.add(new View(new File(WALL_IMAGE_FILE_PATH)));
+        wall.add(new View(WALL_IMAGE_FILE_PATH));
 
         return wall;
     }

@@ -9,7 +9,6 @@ import dk.gruppesex.bodtrd.common.data.entityelements.Velocity;
 import dk.gruppesex.bodtrd.common.data.entityelements.View;
 import dk.gruppesex.bodtrd.common.interfaces.IEntityProcessor;
 import dk.gruppesex.bodtrd.common.services.GamePluginSPI;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
@@ -61,7 +60,7 @@ public class PlayerPlugin implements GamePluginSPI
         entity.add(new Body(50, 50));
         entity.add(new Velocity());
 
-        entity.add(new View(new File("../../../Player/src/main/java/dk/gruppesex/bodtrd/player/assets/ball_red.png")));
+        entity.add(new View("../../../Player/src/main/java/dk/gruppesex/bodtrd/player/assets/ball_red.png"));
         return entity;
 
     }

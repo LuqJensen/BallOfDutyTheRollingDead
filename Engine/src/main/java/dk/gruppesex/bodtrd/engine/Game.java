@@ -37,17 +37,14 @@ public class Game implements ApplicationListener
     private final Lookup _lookup = Lookup.getDefault();
     private final GameData _gameData = new GameData();
     private List<IEntityProcessor> _entityProcessors = new ArrayList<>();
-    private Map<Integer, Entity> _world;
+    private Map<Integer, Entity> _world = new ConcurrentHashMap<>();
     private List<GamePluginSPI> _gamePlugins;
-    private SpriteBatch _batch;
-    private AssetManager _assetManager;
+    private SpriteBatch _batch = new SpriteBatch();
+    private AssetManager _assetManager = new AssetManager();
 
     @Override
     public void create()
     {
-        _world = new ConcurrentHashMap<>();
-        _assetManager = new AssetManager();
-        _batch = new SpriteBatch();
         _gameData.setDisplayWidth(Gdx.graphics.getWidth());
         _gameData.setDisplayHeight(Gdx.graphics.getHeight());
         _camera = new OrthographicCamera(_gameData.getDisplayWidth(), _gameData.getDisplayHeight());

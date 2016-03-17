@@ -16,11 +16,11 @@ public class View
 {
     private String _imageFile;
 
-    public View(File file)
+    public View(String path)
     {
         try
         {
-            _imageFile = file.getCanonicalPath().replace("\\", "/");
+            _imageFile = new File(path).getCanonicalPath().replace("\\", "/");
         }
         catch (IOException ex)
         {
@@ -36,11 +36,11 @@ public class View
 
     }
 
-    public void setImageFile(File file)
+    public void setImageFile(String path)
     {
         try
         {
-            _imageFile = file.getCanonicalPath().replace("\\", "/");
+            _imageFile = new File(path).getCanonicalPath().replace("\\", "/");
         }
         catch (IOException ex)
         {
