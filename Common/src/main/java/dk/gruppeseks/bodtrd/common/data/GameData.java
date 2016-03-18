@@ -5,6 +5,7 @@
  */
 package dk.gruppeseks.bodtrd.common.data;
 
+import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 
 /**
@@ -23,6 +24,18 @@ public class GameData
     private GameState _gameState;
 
     private Position _playerPosition;
+
+    private Body _playerBody;
+
+    public Body getPlayerBody()
+    {
+        return _playerBody;
+    }
+
+    public void setPlayerBody(Body body)
+    {
+        this._playerBody = body;
+    }
 
     public Position getPlayerPosition()
     {

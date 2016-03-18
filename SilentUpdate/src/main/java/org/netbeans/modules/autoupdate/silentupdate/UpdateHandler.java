@@ -1,22 +1,26 @@
 package org.netbeans.modules.autoupdate.silentupdate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.netbeans.api.autoupdate.InstallSupport;
 import org.netbeans.api.autoupdate.InstallSupport.Installer;
 import org.netbeans.api.autoupdate.InstallSupport.Validator;
 import org.netbeans.api.autoupdate.OperationContainer;
 import org.netbeans.api.autoupdate.OperationContainer.OperationInfo;
 import org.netbeans.api.autoupdate.OperationException;
+import org.netbeans.api.autoupdate.OperationSupport;
 import org.netbeans.api.autoupdate.OperationSupport.Restarter;
 import org.netbeans.api.autoupdate.UpdateElement;
 import org.netbeans.api.autoupdate.UpdateManager;
 import org.netbeans.api.autoupdate.UpdateUnit;
 import org.netbeans.api.autoupdate.UpdateUnitProvider;
 import org.netbeans.api.autoupdate.UpdateUnitProviderFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -26,6 +30,7 @@ public final class UpdateHandler
 {
 
     public static final String SILENT_UC_CODE_NAME = "org_netbeans_modules_autoupdate_silentupdate_update_center"; // NOI18N
+    private static List<UpdateUnit> lastUpdateUnits = new ArrayList();
 
     public static boolean timeToCheck()
     {
@@ -54,7 +59,7 @@ public final class UpdateHandler
 
         Collection<UpdateElement> updates = findUpdates();
         Collection<UpdateElement> available = Collections.emptySet();
-        if (installNewModules())
+        if (newModuleInstallationAllowed())
         {
             available = findNewModules();
         }
@@ -113,6 +118,7 @@ public final class UpdateHandler
         List<UpdateUnit> updateUnits = UpdateManager.getDefault().getUpdateUnits();
         for (UpdateUnit unit : updateUnits)
         {
+            // System.out.println("name: " + unit.getCodeName() + "   installed: " + (unit.getInstalled() != null) + "   available update: " + !unit.getAvailableUpdates().isEmpty());
             if (unit.getInstalled() != null)
             { // means the plugin already installed
                 if (!unit.getAvailableUpdates().isEmpty())
@@ -135,6 +141,7 @@ public final class UpdateHandler
 
         // download
         InstallSupport support = container.getSupport();
+
         Validator v = null;
         try
         {
@@ -192,6 +199,7 @@ public final class UpdateHandler
         List<UpdateUnit> updateUnits = UpdateManager.getDefault().getUpdateUnits();
         for (UpdateUnit unit : updateUnits)
         {
+
             if (unit.getInstalled() == null)
             { // means the plugin is not installed yet
                 if (!unit.getAvailableUpdates().isEmpty())
@@ -203,8 +211,30 @@ public final class UpdateHandler
         return elements4install;
     }
 
+    static void uninstallRemovedModules()
+    {
+        UpdateUnitProvider silentUpdateProvider = getSilentUpdateProvider();
+        List<UpdateUnit> updateUnits = silentUpdateProvider.getUpdateUnits();
+        List<String> unitsToUninstall = new ArrayList();
+
+        for (UpdateUnit lastUnit : lastUpdateUnits)
+        {
+            if (!updateUnits.contains(lastUnit))
+            {
+                unitsToUninstall.add(lastUnit.getCodeName());
+            }
+        }
+        if (unitsToUninstall.size() > 0)
+        {
+            doUninstall(unitsToUninstall);
+        }
+
+        lastUpdateUnits = updateUnits;
+    }
+
     static void refreshSilentUpdateProvider()
     {
+
         UpdateUnitProvider silentUpdateProvider = getSilentUpdateProvider();
         if (silentUpdateProvider == null)
         {
@@ -311,6 +341,7 @@ public final class UpdateHandler
     {
 
         Installer installer = support.doValidate(validator, null); // validates all plugins are correctly downloaded
+
         // XXX: use there methods to make sure updates are signed and trusted
         // installSupport.isSigned(installer, <an update element>);
         // installSupport.isTrusted(installer, <an update element>);
@@ -319,10 +350,115 @@ public final class UpdateHandler
 
     static Restarter doInstall(InstallSupport support, Installer installer) throws OperationException
     {
+        OperationContainer<OperationSupport> con = OperationContainer.createForDirectUninstall();
         return support.doInstall(installer, null);
     }
 
-    private static boolean installNewModules()
+    static void doDisable(Collection codeNames)
+    { // codeName contains code name of modules for disable
+        Collection<UpdateElement> toDisable = new HashSet();
+        List<UpdateUnit> allUpdateUnits = UpdateManager.getDefault().getUpdateUnits(UpdateManager.TYPE.MODULE);
+        for (UpdateUnit unit : allUpdateUnits)
+        {
+            if (unit.getInstalled() != null)
+            { // filter all installed modules
+                UpdateElement el = unit.getInstalled();
+                if (el.isEnabled())
+                { // filter all enabled modules
+                    if (codeNames.contains(el.getCodeName()))
+                    { // filter given module in the parameter
+                        toDisable.add(el);
+                    }
+                }
+            }
+        }
+
+        OperationContainer<OperationSupport> oc = OperationContainer.createForDirectDisable();
+
+        for (UpdateElement module : toDisable)
+        {
+            if (oc.canBeAdded(module.getUpdateUnit(), module))
+            { // check if module can be disabled
+                OperationInfo operationInfo = oc.add(module);
+                if (operationInfo == null)
+                { // it means it's already planned to disable
+                    continue;
+                }
+                // get all module depending on this module
+                Set requiredElements = operationInfo.getRequiredElements();
+                // add all of them between modules for disable
+                oc.add(requiredElements);
+            }
+        }
+
+        // check the container doesn't contain any invalid element
+        assert oc.listInvalid().isEmpty();
+        try
+        {
+            // get operation support for complete the disable operation
+            Restarter restarter = oc.getSupport().doOperation(null);
+            // no restart needed in this case
+            assert restarter == null;
+        }
+        catch (OperationException ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    static void doUninstall(Collection codeNames)
+    { // codeName contains code name of modules for disable
+        Collection<UpdateElement> toUninstall = new HashSet();
+        List<UpdateUnit> allUpdateUnits = UpdateManager.getDefault().getUpdateUnits(UpdateManager.TYPE.MODULE);
+        for (UpdateUnit unit : allUpdateUnits)
+        {
+            if (unit.getInstalled() != null)
+            { // filter all installed modules
+                UpdateElement el = unit.getInstalled();
+                if (el.isEnabled())
+                { // filter all enabled modules
+                    if (codeNames.contains(el.getCodeName()))
+                    { // filter given module in the parameter
+                        toUninstall.add(el);
+                    }
+                }
+            }
+        }
+
+        OperationContainer<OperationSupport> oc = OperationContainer.createForDirectUninstall();
+
+        for (UpdateElement module : toUninstall)
+        {
+            if (oc.canBeAdded(module.getUpdateUnit(), module))
+            { // check if module can be disabled
+                OperationInfo operationInfo = oc.add(module);
+                if (operationInfo == null)
+                { // it means it's already planned to disable
+                    continue;
+                }
+                // get all module depending on this module
+                Set requiredElements = operationInfo.getRequiredElements();
+                // add all of them between modules for disable
+                oc.add(requiredElements);
+            }
+        }
+
+        // check the container doesn't contain any invalid element
+        assert oc.listInvalid().isEmpty();
+        try
+        {
+            // get operation support for complete the disable operation
+            Restarter restarter = oc.getSupport().doOperation(null);
+            // no restart needed in this case
+            assert restarter == null;
+        }
+        catch (OperationException ex)
+        {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    private static boolean newModuleInstallationAllowed()
     {
         String s = NbBundle.getBundle("org.netbeans.modules.autoupdate.silentupdate.resources.Bundle").getString("UpdateHandler.NewModules");
         return Boolean.parseBoolean(s);

@@ -41,7 +41,10 @@ public class PlayerPlugin implements GamePluginSPI
         processors.add(_processor);
 
         _gameData = gameData;
-        gameData.setPlayerPosition(_entity.get(Position.class));
+        Body body = _entity.get(Body.class);
+        Position pos = _entity.get(Position.class);
+        _gameData.setPlayerPosition(pos);
+        _gameData.setPlayerBody(body);
     }
 
     @Override

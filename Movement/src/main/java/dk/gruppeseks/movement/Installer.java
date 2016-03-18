@@ -15,12 +15,14 @@ public class Installer extends ModuleInstall
     @Override
     public void restored()
     {
-        // TODO
+        System.out.println("Movement RESTORED - This message was made by ploug");
+
     }
 
     @Override
     public void uninstalled()
     {
+        System.out.println("Movement UNINSTALLED - This message was made by ploug");
         if (Plugin != null)
         {
             Plugin.stop();

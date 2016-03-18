@@ -21,8 +21,10 @@ import dk.gruppeseks.bodtrd.common.interfaces.IEntityProcessor;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
 import dk.gruppeseks.bodtrd.managers.GameInputManager;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
@@ -39,7 +41,7 @@ public class Game implements ApplicationListener
     private final GameData _gameData = new GameData();
     private List<IEntityProcessor> _entityProcessors = new ArrayList<>();
     private Map<Integer, Entity> _world = new ConcurrentHashMap<>();
-    private List<GamePluginSPI> _gamePlugins;
+    private Set<GamePluginSPI> _gamePlugins;
     private SpriteBatch _batch;
     private AssetManager _assetManager;
 
@@ -57,7 +59,8 @@ public class Game implements ApplicationListener
 
         Lookup.Result<GamePluginSPI> result = _lookup.lookupResult(GamePluginSPI.class);
         result.addLookupListener(lookupListener);
-        _gamePlugins = new ArrayList(result.allInstances());
+        _gamePlugins = ConcurrentHashMap.newKeySet();
+        _gamePlugins.addAll(result.allInstances());
         result.allItems();
 
         for (GamePluginSPI plugin : _gamePlugins)
@@ -73,7 +76,8 @@ public class Game implements ApplicationListener
         @Override
         public void resultChanged(LookupEvent le)
         {
-            for (GamePluginSPI updatedGamePlugin : _lookup.lookupAll(GamePluginSPI.class))
+            Collection<GamePluginSPI> intendedPlugins = (Collection<GamePluginSPI>)_lookup.lookupAll(GamePluginSPI.class);
+            for (GamePluginSPI updatedGamePlugin : intendedPlugins)
             {
                 if (!_gamePlugins.contains(updatedGamePlugin))
                 {
@@ -82,6 +86,13 @@ public class Game implements ApplicationListener
                 }
             }
 
+            for (GamePluginSPI oldGamePlugin : _gamePlugins)
+            {
+                if (!intendedPlugins.contains(oldGamePlugin))
+                {
+                    _gamePlugins.remove(oldGamePlugin);
+                }
+            }
             loadViews();
         }
     };
@@ -134,8 +145,14 @@ public class Game implements ApplicationListener
 
     private void draw()
     {
-        _camera.position.x = (float)(_gameData.getPlayerPosition().getX());
-        _camera.position.y = (float)(_gameData.getPlayerPosition().getY());
+        Body pBody = _gameData.getPlayerBody();
+        Position pPosition = _gameData.getPlayerPosition();
+        if (pBody != null && pPosition != null)
+        {
+            _camera.position.x = (float)(pPosition.getX() + pBody.getWidth() / 2);
+            _camera.position.y = (float)(pPosition.getY()) + pBody.getHeight() / 2;
+        }
+
         _camera.update();
         _batch.setProjectionMatrix(_camera.combined);
 
@@ -174,6 +191,6 @@ public class Game implements ApplicationListener
     @Override
     public void dispose()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

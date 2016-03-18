@@ -27,7 +27,6 @@ public class PlayerProcessor implements IEntityProcessor
     public void process(GameData gameData, Map<Integer, Entity> world)
     {
         Position pos = _player.get(Position.class);
-        gameData.setPlayerPosition(pos);
         Vector2 vel = _player.get(Velocity.class).getVector();
         // Reset velocity direction, in case direction keys are no longer pressed.
         vel.setX(0);
