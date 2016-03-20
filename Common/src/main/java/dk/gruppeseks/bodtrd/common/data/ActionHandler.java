@@ -5,7 +5,6 @@
  */
 package dk.gruppeseks.bodtrd.common.data;
 
-import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ActionHandler
 {
     private static Map<Action, Boolean> _actions = new ConcurrentHashMap();
-    private static Position _mousePosition = new Position(0, 0);
 
     public static void setActive(Action action, boolean b)
     {
@@ -29,14 +27,4 @@ public class ActionHandler
         return val != null && val;
     }
 
-    public static Position getMousePosition()
-    {
-        return _mousePosition;
-    }
-
-    public static void setMousePosition(int x, int y)
-    {
-        _mousePosition.setX(x);
-        _mousePosition.setY(y);
-    }
 }

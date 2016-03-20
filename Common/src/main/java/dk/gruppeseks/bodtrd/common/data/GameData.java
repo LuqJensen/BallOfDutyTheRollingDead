@@ -23,6 +23,18 @@ public class GameData
     private GameState _gameState;
 
     private Position _playerPosition;
+    private Position _mousePosition = new Position(0, 0);
+
+    public Position getMousePosition()
+    {
+        return _mousePosition;
+    }
+
+    public void setMousePosition(int x, int y)
+    {
+        _mousePosition.setX(x);
+        _mousePosition.setY(y);
+    }
 
     public Position getPlayerPosition()
     {

@@ -12,7 +12,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import dk.gruppeseks.bodtrd.common.data.ActionHandler;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import dk.gruppeseks.bodtrd.common.data.Entity;
 import dk.gruppeseks.bodtrd.common.data.GameData;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
@@ -39,20 +40,23 @@ public class Game implements ApplicationListener
     private World _world;
     private List<GamePluginSPI> _gamePlugins;
     private SpriteBatch _batch;
+    private ShapeRenderer _shapeRenderer;
     private AssetManager _assetManager;
+    private GameData _gameData;
 
     @Override
     public void create()
     {
+        _shapeRenderer = new ShapeRenderer();
         _batch = new SpriteBatch();
         _assetManager = new AssetManager();
 
-        GameData gameData = new GameData();
-        _world = new World(gameData);
+        _gameData = new GameData();
+        _world = new World(_gameData);
 
-        gameData.setDisplayWidth(Gdx.graphics.getWidth());
-        gameData.setDisplayHeight(Gdx.graphics.getHeight());
-        _camera = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
+        _gameData.setDisplayWidth(Gdx.graphics.getWidth());
+        _gameData.setDisplayHeight(Gdx.graphics.getHeight());
+        _camera = new OrthographicCamera(_gameData.getDisplayWidth(), _gameData.getDisplayHeight());
 
         Gdx.input.setInputProcessor(new GameInputManager());
 
@@ -119,7 +123,7 @@ public class Game implements ApplicationListener
 
     private void update()
     {
-        ActionHandler.setMousePosition(Gdx.input.getX(), Gdx.input.getY());
+        _gameData.setMousePosition(Gdx.input.getX() + (int)(_camera.position.x - _camera.viewportWidth / 2), -Gdx.input.getY() + Gdx.graphics.getHeight() + (int)(_camera.position.y - _camera.viewportHeight / 2));
         _world.update();
         _assetManager.update();
     }
@@ -150,6 +154,17 @@ public class Game implements ApplicationListener
         }
         _batch.end();
 
+        //Debug rendering
+        drawMouse();
+    }
+
+    private void drawMouse()
+    {
+        _shapeRenderer.setProjectionMatrix(_camera.combined);
+        _shapeRenderer.begin(ShapeType.Filled);
+        _shapeRenderer.setColor(1, 1, 0, 1);
+        _shapeRenderer.circle((float)_gameData.getMousePosition().getX(), (float)_gameData.getMousePosition().getY(), 10);
+        _shapeRenderer.end();
     }
 
     @Override

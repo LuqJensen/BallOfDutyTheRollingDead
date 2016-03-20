@@ -5,6 +5,7 @@
  */
 package dk.gruppeseks.bodtrd.managers;
 
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import dk.gruppeseks.bodtrd.common.data.Action;
@@ -16,6 +17,43 @@ import dk.gruppeseks.bodtrd.common.data.ActionHandler;
  */
 public class GameInputManager extends InputAdapter
 {
+
+    @Override
+    public boolean touchDown(int x, int y, int pointer, int button)
+    {
+        switch (button)
+        {
+            case Buttons.LEFT:
+            {
+                ActionHandler.setActive(Action.SHOOT, true);
+                break;
+            }
+            default:
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int x, int y, int pointer, int button)
+    {
+        switch (button)
+        {
+            case Buttons.LEFT:
+            {
+                ActionHandler.setActive(Action.SHOOT, true);
+                break;
+            }
+            default:
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public boolean keyDown(int k)
     {
@@ -54,6 +92,10 @@ public class GameInputManager extends InputAdapter
             {
                 ActionHandler.setActive(Action.SHOOT, true);
                 break;
+            }
+            default:
+            {
+                return false;
             }
         }
 
@@ -98,6 +140,10 @@ public class GameInputManager extends InputAdapter
             {
                 ActionHandler.setActive(Action.SHOOT, false);
                 break;
+            }
+            default:
+            {
+                return false;
             }
         }
         return true;

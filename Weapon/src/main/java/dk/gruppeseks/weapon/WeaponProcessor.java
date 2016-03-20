@@ -5,7 +5,6 @@
  */
 package dk.gruppeseks.weapon;
 
-import dk.gruppeseks.bodtrd.common.data.ActionHandler;
 import dk.gruppeseks.bodtrd.common.data.Entity;
 import static dk.gruppeseks.bodtrd.common.data.EntityType.PROJECTILE;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
@@ -70,8 +69,9 @@ public class WeaponProcessor implements IEntityProcessor
     private void attack(World world, Entity e, Weapon wep)
     {
         Position p = e.get(Position.class);
-        Position mousePos = ActionHandler.getMousePosition();
-        wep.setOrientation(new Vector2(mousePos.getX(), mousePos.getY()));
+        Position mousePos = world.getGameData().getMousePosition();
+        wep.setOrientation(new Vector2(mousePos.getX() - p.getX(), mousePos.getY() - p.getY()));
+        System.out.println("Mouse x,y: " + mousePos.getX() + ", " + mousePos.getY() + "   entity x, y: " + p.getX() + ", " + p.getY());
         Vector2 orientation = wep.getOrientation().setMagnitude(e.get(Body.class).getWidth() / 2);
         Position position = new Position(p.getX() + orientation.getX(), p.getY() + orientation.getY());
         Velocity velocity = new Velocity(wep.getOrientation().setMagnitude(500));//;TODO: bulletSpeed
