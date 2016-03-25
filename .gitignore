@@ -25,3 +25,4 @@ nb-configuration.xml
 /Weapon/target/
 /Movement/target/
 /SilentUpdate/src/main/resources/org/netbeans/modules/autoupdate/silentupdate/resources/Bundle.properties
+/Collision/target/

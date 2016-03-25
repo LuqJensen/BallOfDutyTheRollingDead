@@ -21,6 +21,7 @@ public class Installer extends ModuleInstall
         cfg.height = 720;
         cfg.useGL30 = false;
         cfg.resizable = false;
+        cfg.vSyncEnabled = false;
 
         new LwjglApplication(new Game(), cfg);
     }

@@ -13,11 +13,28 @@ public class Body
 {
     private int _height;
     private int _width;
+    private Geometry _geometry;
 
-    public Body(int height, int width)
+    public enum Geometry
+    {
+        RECTANGLE, CIRCLE
+    }
+
+    public Body(int height, int width, Geometry geometry)
     {
         _height = height;
         _width = width;
+        _geometry = geometry;
+    }
+
+    public Geometry getGeometry()
+    {
+        return _geometry;
+    }
+
+    public void setGeometry(Geometry geometry)
+    {
+        this._geometry = geometry;
     }
 
     public int getHeight()
