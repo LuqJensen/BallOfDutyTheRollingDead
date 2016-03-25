@@ -10,6 +10,7 @@ import static dk.gruppeseks.bodtrd.common.data.EntityType.PROJECTILE;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
 import dk.gruppeseks.bodtrd.common.data.World;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Body.Geometry;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Velocity;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Weapon;
@@ -76,7 +77,7 @@ public class WeaponProcessor implements IEntityProcessor
 
         Vector2 orientation = new Vector2(mousePos.getX() - center.getX(), mousePos.getY() - center.getY()).setMagnitude(b.getWidth() / 2);
 
-        Body body = new Body(15, 15);
+        Body body = new Body(15, 15, Geometry.CIRCLE);
         Position position = new Position(center.getX() + orientation.getX() - body.getWidth() / 2, center.getY() + orientation.getY() - body.getHeight() / 2);
 
         Velocity velocity = new Velocity(orientation.setMagnitude(500));//;TODO: bulletSpeed

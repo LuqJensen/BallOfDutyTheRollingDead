@@ -64,6 +64,7 @@
         <module>ModuleBuilder</module>
         <module>Weapon</module>
         <module>Movement</module>
+        <module>Collision</module>
     </modules>
 
     <properties>

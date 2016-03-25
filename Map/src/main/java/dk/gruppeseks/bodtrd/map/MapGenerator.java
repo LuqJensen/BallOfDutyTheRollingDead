@@ -9,6 +9,7 @@ import dk.gruppeseks.bodtrd.common.data.Entity;
 import dk.gruppeseks.bodtrd.common.data.EntityType;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Body.Geometry;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import java.util.List;
 import java.util.Random;
@@ -143,7 +144,7 @@ public class MapGenerator
         wall.setType(EntityType.WALL);
 
         wall.add(new Position(pos.getX(), pos.getY()));
-        wall.add(new Body(wallSize, wallSize));
+        wall.add(new Body(wallSize, wallSize, Geometry.RECTANGLE));
         wall.add(ViewManager.getView(MapPlugin.WALL_IMAGE_FILE_PATH));
 
         return wall;

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -45,10 +46,12 @@ public class Game implements ApplicationListener
     private ShapeRenderer _shapeRenderer;
     private AssetManager _assetManager;
     private Texture background;
+    private BitmapFont _font;
 
     @Override
     public void create()
     {
+        _font = new BitmapFont();
         _shapeRenderer = new ShapeRenderer();
         _batch = new SpriteBatch();
         _assetManager = new AssetManager();
@@ -159,8 +162,9 @@ public class Game implements ApplicationListener
     private void draw()
     {
         Position pPosition = _world.getGameData().getPlayerPosition();
-        _camera.position.x = (float)(pPosition.getX());
-        _camera.position.y = (float)(pPosition.getY());
+        Body pBody = _world.getGameData().getPlayerBody();
+        _camera.position.x = (float)(pPosition.getX() + pBody.getWidth() / 2);
+        _camera.position.y = (float)(pPosition.getY() + pBody.getHeight() / 2);
 
         _camera.update();
         _batch.setProjectionMatrix(_camera.combined);
@@ -190,10 +194,11 @@ public class Game implements ApplicationListener
                 _batch.draw(_assetManager.get(view.getImageFilePath(), Texture.class), (float)pos.getX(), (float)pos.getY(), (float)body.getWidth(), (float)body.getHeight());
             }
         }
-        _batch.end();
 
         //Debug rendering
-        drawMouse();
+//        drawMouse();
+        drawFps();
+        _batch.end();
     }
 
     private void drawMouse()
@@ -203,6 +208,12 @@ public class Game implements ApplicationListener
         _shapeRenderer.setColor(1, 1, 0, 1);
         _shapeRenderer.circle((float)_world.getGameData().getMousePosition().getX(), (float)_world.getGameData().getMousePosition().getY(), 7);
         _shapeRenderer.end();
+    }
+
+    private void drawFps()
+    {
+        _font.draw(_batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 10); // Current anchored to the world.
+
     }
 
     @Override
@@ -221,4 +232,5 @@ public class Game implements ApplicationListener
     {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

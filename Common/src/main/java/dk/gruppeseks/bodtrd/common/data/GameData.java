@@ -6,6 +6,7 @@
 package dk.gruppeseks.bodtrd.common.data;
 
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Body.Geometry;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.View;
 
@@ -28,7 +29,7 @@ public class GameData
     private Position _mousePosition = new Position(0, 0);
 
     private Position _playerPosition = new Position(0, 0);
-    private Body _playerBody = new Body(0, 0);
+    private Body _playerBody = new Body(0, 0, Geometry.CIRCLE);
 
     public Position getMousePosition()
     {
