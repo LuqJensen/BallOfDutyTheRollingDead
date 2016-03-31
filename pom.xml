@@ -65,6 +65,8 @@
         <module>Weapon</module>
         <module>Movement</module>
         <module>Collision</module>
+        <module>Zombie</module>
+        <module>AI</module>
     </modules>
 
     <properties>
