@@ -25,12 +25,12 @@ public class ViewManager
         return _views.values();
     }
 
-    public static void createView(String path)
+    public static void createView(String path, boolean repeatImage)
     {
         View v = null;
         try
         {
-            v = new View(new File(path).getCanonicalPath().replace("\\", "/"));
+            v = new View(new File(path).getCanonicalPath().replace("\\", "/"), repeatImage);
             _views.put(path, v);
         }
         catch (IOException ex)

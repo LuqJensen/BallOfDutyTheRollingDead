@@ -30,7 +30,7 @@ public class WeaponPlugin implements GamePluginSPI
     {
         Installer.Plugin = this;
 
-        ViewManager.createView(BULLET_IMAGE_FILE_PATH);
+        ViewManager.createView(BULLET_IMAGE_FILE_PATH, false);
 
         _world = world;
 

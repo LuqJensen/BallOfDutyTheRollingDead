@@ -29,43 +29,16 @@ public class MapGenerator
 
     public static void generateMap(List<Entity> walls, int mapWidth, int mapHeight, int wallSize, int wallAmount)
     {
+        Entity[] borderWalls = createBorderWalls(wallSize, mapWidth, mapHeight);
+        walls.add(borderWalls[0]);
+        walls.add(borderWalls[1]);
+        walls.add(borderWalls[2]);
+        walls.add(borderWalls[3]);
+        
         int mapGridX = mapWidth / wallSize;
         int mapGridY = mapHeight / wallSize;
 
         Position pos = new Position(0, 0);
-
-        for (int i = 0; i < mapGridX; i++)
-        {
-            walls.add(createWall(pos, wallSize));
-            pos.setX(pos.getX() + wallSize);
-        }
-
-        pos.setX(0);
-        pos.setY(mapHeight - wallSize);
-
-        for (int i = 0; i < mapGridX; i++)
-        {
-            walls.add(createWall(pos, wallSize));
-            pos.setX(pos.getX() + wallSize);
-        }
-
-        pos.setX(0);
-        pos.setY(wallSize);
-
-        for (int i = 0; i < mapGridY - 2; i++)
-        {
-            walls.add(createWall(pos, wallSize));
-            pos.setY(pos.getY() + wallSize);
-        }
-
-        pos.setX(mapWidth - wallSize);
-        pos.setY(wallSize);
-
-        for (int i = 0; i < mapGridY - 2; i++)
-        {
-            walls.add(createWall(pos, wallSize));
-            pos.setY(pos.getY() + wallSize);
-        }
 
         int wallCount = 0;
 
@@ -75,7 +48,7 @@ public class MapGenerator
             {
                 pos.setX((_rand.nextInt(mapGridX)) * wallSize);
                 pos.setY((_rand.nextInt(mapGridY)) * wallSize);
-                if (checkValidWall(pos, walls))
+                if (checkValidWall(pos, walls, mapWidth, mapHeight, wallSize))
                 {
                     walls.add(createWall(pos, wallSize));
                     ++wallCount;
@@ -107,7 +80,7 @@ public class MapGenerator
                 {
                     break;
                 }
-                if (checkValidWall(pos2, walls))
+                if (checkValidWall(pos2, walls, mapWidth, mapHeight, wallSize))
                 {
                     walls.add(createWall(pos2, wallSize));
                     pos = pos2;
@@ -126,8 +99,12 @@ public class MapGenerator
         }
     }
 
-    private static boolean checkValidWall(Position newWallPos, List<Entity> walls)
+    private static boolean checkValidWall(Position newWallPos, List<Entity> walls, int mapWidth, int mapHeight, int wallSize)
     {
+        if (newWallPos.getX() <= 0 || newWallPos.getY() <= 0 || newWallPos.getX() >= mapWidth - wallSize || newWallPos.getY() >= mapHeight - wallSize)
+        {
+            return false;
+        }
         for (Entity w : walls)
         {
             if (newWallPos.equals(w.get(Position.class)))
@@ -148,5 +125,36 @@ public class MapGenerator
         wall.add(ViewManager.getView(MapPlugin.WALL_IMAGE_FILE_PATH));
 
         return wall;
+    }
+    
+    private static Entity[] createBorderWalls(int wallSize, int mapWidth, int mapHeight)
+    {
+        Entity wallBot = new Entity();
+        wallBot.setType(EntityType.WALL);
+        wallBot.add(new Position(0, 0));
+        wallBot.add(new Body(wallSize, mapWidth, Geometry.RECTANGLE));
+        wallBot.add(ViewManager.getView(MapPlugin.BORDER_IMAGE_FILE_PATH));
+        
+        Entity wallTop = new Entity();
+        wallTop.setType(EntityType.WALL);
+        wallTop.add(new Position(0, mapHeight - wallSize));
+        wallTop.add(new Body(wallSize, mapWidth, Geometry.RECTANGLE));
+        wallTop.add(ViewManager.getView(MapPlugin.BORDER_IMAGE_FILE_PATH));
+        
+        Entity wallLeft = new Entity();
+        wallLeft.setType(EntityType.WALL);
+        wallLeft.add(new Position(0, wallSize));
+        wallLeft.add(new Body(mapHeight - wallSize * 2, wallSize, Geometry.RECTANGLE));
+        wallLeft.add(ViewManager.getView(MapPlugin.BORDER_IMAGE_FILE_PATH));
+        
+        Entity wallRight = new Entity();
+        wallRight.setType(EntityType.WALL);
+        wallRight.add(new Position(mapWidth - wallSize, wallSize));
+        wallRight.add(new Body(mapHeight - wallSize * 2, wallSize, Geometry.RECTANGLE));
+        wallRight.add(ViewManager.getView(MapPlugin.BORDER_IMAGE_FILE_PATH));
+        
+        Entity[] walls = {wallBot, wallTop, wallLeft, wallRight};
+        
+        return walls;
     }
 }

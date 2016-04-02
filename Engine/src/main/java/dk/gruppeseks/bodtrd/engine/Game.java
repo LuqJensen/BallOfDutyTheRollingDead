@@ -146,7 +146,10 @@ public class Game implements ApplicationListener
             if (_assetManager.isLoaded(backgroundTextureView.getImageFilePath()))
             {
                 background = _assetManager.get(backgroundTextureView.getImageFilePath(), Texture.class);
-                background.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+                if (backgroundTextureView.isRepeat())
+                {
+                    background.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+                }
             }
         }
     }
@@ -172,10 +175,12 @@ public class Game implements ApplicationListener
 
         if (background != null)
         {
-            int mapWidth = _world.getGameData().getMapWidth();
-            int mapHeight = _world.getGameData().getMapHeight();
+            int backgroundWidth = background.getWidth();
+            int backgroundHeight = background.getHeight();
+            int backgroundRepeatWidth = _world.getGameData().getMapWidth() / backgroundWidth;
+            int backgroundRepeatHeight = _world.getGameData().getMapHeight() / backgroundHeight;
 
-            _batch.draw(background, 0, 0, background.getWidth() * (mapWidth / background.getWidth()), background.getHeight() * (mapHeight / background.getHeight()), 0, mapHeight / background.getHeight(), mapWidth / background.getWidth(), 0);
+            _batch.draw(background, 0, 0, backgroundWidth * backgroundRepeatWidth, backgroundHeight * backgroundRepeatHeight, 0, backgroundRepeatHeight, backgroundRepeatWidth, 0);
         }
 
         for (Entity e : _world.entities())
@@ -188,10 +193,26 @@ public class Game implements ApplicationListener
             {
                 continue;
             }
+            
 
             if (_assetManager.isLoaded(view.getImageFilePath()))
             {
-                _batch.draw(_assetManager.get(view.getImageFilePath(), Texture.class), (float)pos.getX(), (float)pos.getY(), (float)body.getWidth(), (float)body.getHeight());
+                Texture texture =_assetManager.get(view.getImageFilePath(), Texture.class);
+                if (view.isRepeat())
+                {
+                    texture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+                    
+                    int textureWidth = texture.getWidth();
+                    int textureHeight = texture.getHeight();
+                    int textureRepeatWidth = body.getWidth() / textureWidth;
+                    int textureRepeatHeight = body.getHeight() / textureWidth;
+                    
+                    _batch.draw(texture, (float)pos.getX(), (float)pos.getY(), textureWidth * textureRepeatWidth, textureHeight * textureRepeatHeight, 0, textureRepeatHeight, textureRepeatWidth, 0);
+                }
+                else
+                {
+                    _batch.draw(texture, (float)pos.getX(), (float)pos.getY(), (float)body.getWidth(), (float)body.getHeight());
+                }
             }
         }
 
@@ -212,7 +233,8 @@ public class Game implements ApplicationListener
 
     private void drawFps()
     {
-        _font.draw(_batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 10); // Current anchored to the world.
+        Position pPosition = _world.getGameData().getPlayerPosition();
+        _font.draw(_batch, "fps: " + Gdx.graphics.getFramesPerSecond(), (float) (pPosition.getX() - 600), (float) (pPosition.getY() + 370)); // Need to create HUD
     }
 
     @Override

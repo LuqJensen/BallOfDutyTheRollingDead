@@ -12,14 +12,20 @@ package dk.gruppeseks.bodtrd.common.data.entityelements;
 public class View
 {
     private final String _imageFile;
+    private final boolean _repeatImage;
 
-    public View(String path)
+    public View(String path, boolean repeatImage)
     {
         _imageFile = path;
+        _repeatImage = repeatImage;
     }
 
     public String getImageFilePath()
     {
         return _imageFile;
+    }
+
+    public boolean isRepeat() {
+        return _repeatImage;
     }
 }

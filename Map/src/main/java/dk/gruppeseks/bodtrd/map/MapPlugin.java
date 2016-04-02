@@ -21,6 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MapPlugin implements GamePluginSPI
 {
     public final static String WALL_IMAGE_FILE_PATH = "../../../Map/src/main/java/dk/gruppeseks/bodtrd/map/assets/wall_box.png";
+    public final static String BORDER_IMAGE_FILE_PATH = "../../../Map/src/main/java/dk/gruppeseks/bodtrd/map/assets/texture_border.png";
     private final static String DIRT_IMAGE_FILE_PATH = "../../../Map/src/main/java/dk/gruppeseks/bodtrd/map/assets/texture_dirt.png";
 
     private final static int MAP_WIDTH = 2000; // Be divisible by WALL_SIZE
@@ -50,8 +51,9 @@ public class MapPlugin implements GamePluginSPI
     {
         Installer.Plugin = this;
 
-        ViewManager.createView(WALL_IMAGE_FILE_PATH);
-        ViewManager.createView(DIRT_IMAGE_FILE_PATH);
+        ViewManager.createView(WALL_IMAGE_FILE_PATH, false);
+        ViewManager.createView(BORDER_IMAGE_FILE_PATH, true);
+        ViewManager.createView(DIRT_IMAGE_FILE_PATH, true);
 
         this._world = world;
         _world.getGameData().setMapWidth(MAP_WIDTH);

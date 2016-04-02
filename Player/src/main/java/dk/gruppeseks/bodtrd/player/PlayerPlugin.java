@@ -33,7 +33,7 @@ public class PlayerPlugin implements GamePluginSPI
     {
         Installer.Plugin = this;
 
-        ViewManager.createView(PLAYER_IMAGE_FILE_PATH);
+        ViewManager.createView(PLAYER_IMAGE_FILE_PATH, false);
 
         _world = world;
 
