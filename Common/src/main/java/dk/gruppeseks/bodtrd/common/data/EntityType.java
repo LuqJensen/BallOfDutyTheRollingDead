@@ -13,6 +13,7 @@ public enum EntityType
 {
     PLAYER,
     WALL,
-    PROJECTILE
+    PROJECTILE,
+    ENEMY
 
 }
