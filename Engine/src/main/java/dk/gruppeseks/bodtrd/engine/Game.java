@@ -39,7 +39,8 @@ import org.openide.util.LookupListener;
  *
  * @author lucas
  */
-public class Game implements ApplicationListener {
+public class Game implements ApplicationListener
+{
 
     private OrthographicCamera _camera;
     private final Lookup _lookup = Lookup.getDefault();
@@ -52,7 +53,8 @@ public class Game implements ApplicationListener {
     private BitmapFont _font;
 
     @Override
-    public void create() {
+    public void create()
+    {
         _font = new BitmapFont();
         _shapeRenderer = new ShapeRenderer();
         _batch = new SpriteBatch();
@@ -73,7 +75,8 @@ public class Game implements ApplicationListener {
         _gamePlugins.addAll(result.allInstances());
         result.allItems();
 
-        for (GamePluginSPI plugin : _gamePlugins) {
+        for (GamePluginSPI plugin : _gamePlugins)
+        {
             plugin.start(_world);
         }
         String path = "C:\\Users\\S\\Documents\\BOD3\\BallOfDutyTheRollingDead\\Common\\assets\\sounds\\JohnCena.mp3";
@@ -82,19 +85,25 @@ public class Game implements ApplicationListener {
         loadBackground();
     }
 
-    private final LookupListener lookupListener = new LookupListener() {
+    private final LookupListener lookupListener = new LookupListener()
+    {
         @Override
-        public void resultChanged(LookupEvent le) {
-            Collection<GamePluginSPI> updatedPlugins = (Collection<GamePluginSPI>) _lookup.lookupAll(GamePluginSPI.class);
-            for (GamePluginSPI updatedPlugin : updatedPlugins) {
-                if (!_gamePlugins.contains(updatedPlugin)) {
+        public void resultChanged(LookupEvent le)
+        {
+            Collection<GamePluginSPI> updatedPlugins = (Collection<GamePluginSPI>)_lookup.lookupAll(GamePluginSPI.class);
+            for (GamePluginSPI updatedPlugin : updatedPlugins)
+            {
+                if (!_gamePlugins.contains(updatedPlugin))
+                {
                     updatedPlugin.start(_world);
                     _gamePlugins.add(updatedPlugin);
                 }
             }
 
-            for (GamePluginSPI oldPlugin : _gamePlugins) {
-                if (!updatedPlugins.contains(oldPlugin)) {
+            for (GamePluginSPI oldPlugin : _gamePlugins)
+            {
+                if (!updatedPlugins.contains(oldPlugin))
+                {
                     _gamePlugins.remove(oldPlugin);
                 }
             }
@@ -105,12 +114,14 @@ public class Game implements ApplicationListener {
     };
 
     @Override
-    public void resize(int i, int i1) {
+    public void resize(int i, int i1)
+    {
     }
 
     @Override
-    public void render() {
-        Gdx.gl.glClearColor(0, (float) 0.6, (float) 0.2, 1);
+    public void render()
+    {
+        Gdx.gl.glClearColor(0, (float)0.6, (float)0.2, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         _world.getGameData().setDeltaTime(Gdx.graphics.getDeltaTime());
@@ -119,47 +130,57 @@ public class Game implements ApplicationListener {
         draw();
     }
 
-    private void loadViews() {
-        for (View view : ViewManager.views()) {
+    private void loadViews()
+    {
+        for (View view : ViewManager.views())
+        {
             String imagePath = view.getImageFilePath();
-            if (!_assetManager.isLoaded(imagePath, Texture.class)) {
+            if (!_assetManager.isLoaded(imagePath, Texture.class))
+            {
                 _assetManager.load(imagePath, Texture.class);
             }
         }
         _assetManager.finishLoading();
     }
 
-    private void loadBackground() {
+    private void loadBackground()
+    {
         View backgroundTextureView = _world.getGameData().getMapTextureView();
-        if (backgroundTextureView != null) {
-            if (_assetManager.isLoaded(backgroundTextureView.getImageFilePath())) {
+        if (backgroundTextureView != null)
+        {
+            if (_assetManager.isLoaded(backgroundTextureView.getImageFilePath()))
+            {
                 background = _assetManager.get(backgroundTextureView.getImageFilePath(), Texture.class);
-                if (backgroundTextureView.isRepeat()) {
+                if (backgroundTextureView.isRepeat())
+                {
                     background.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
                 }
             }
         }
     }
 
-    private void update() {
+    private void update()
+    {
         SoundPlayer.HandleSoundTasks();
-        _world.getGameData().setMousePosition(Gdx.input.getX() + (int) (_camera.position.x - _camera.viewportWidth / 2),
-                -Gdx.input.getY() + Gdx.graphics.getHeight() + (int) (_camera.position.y - _camera.viewportHeight / 2));
+        _world.getGameData().setMousePosition(Gdx.input.getX() + (int)(_camera.position.x - _camera.viewportWidth / 2),
+                -Gdx.input.getY() + Gdx.graphics.getHeight() + (int)(_camera.position.y - _camera.viewportHeight / 2));
         _world.update();
         _assetManager.update();
     }
 
-    private void draw() {
+    private void draw()
+    {
         Position pPosition = _world.getGameData().getPlayerPosition();
         Body pBody = _world.getGameData().getPlayerBody();
-        _camera.position.x = (float) (pPosition.getX() + pBody.getWidth() / 2);
-        _camera.position.y = (float) (pPosition.getY() + pBody.getHeight() / 2);
+        _camera.position.x = (float)(pPosition.getX() + pBody.getWidth() / 2);
+        _camera.position.y = (float)(pPosition.getY() + pBody.getHeight() / 2);
 
         _camera.update();
         _batch.setProjectionMatrix(_camera.combined);
         _batch.begin();
 
-        if (background != null) {
+        if (background != null)
+        {
             int backgroundWidth = background.getWidth();
             int backgroundHeight = background.getHeight();
             int backgroundRepeatWidth = _world.getGameData().getMapWidth() / backgroundWidth;
@@ -168,18 +189,22 @@ public class Game implements ApplicationListener {
             _batch.draw(background, 0, 0, backgroundWidth * backgroundRepeatWidth, backgroundHeight * backgroundRepeatHeight, 0, backgroundRepeatHeight, backgroundRepeatWidth, 0);
         }
 
-        for (Entity e : _world.entities()) {
+        for (Entity e : _world.entities())
+        {
             View view = e.get(View.class);
             Body body = e.get(Body.class);
             Position pos = e.get(Position.class);
 
-            if (body == null || pos == null || view == null) {
+            if (body == null || pos == null || view == null)
+            {
                 continue;
             }
 
-            if (_assetManager.isLoaded(view.getImageFilePath())) {
+            if (_assetManager.isLoaded(view.getImageFilePath()))
+            {
                 Texture texture = _assetManager.get(view.getImageFilePath(), Texture.class);
-                if (view.isRepeat()) {
+                if (view.isRepeat())
+                {
                     texture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 
                     int textureWidth = texture.getWidth();
@@ -187,9 +212,11 @@ public class Game implements ApplicationListener {
                     int textureRepeatWidth = body.getWidth() / textureWidth;
                     int textureRepeatHeight = body.getHeight() / textureWidth;
 
-                    _batch.draw(texture, (float) pos.getX(), (float) pos.getY(), textureWidth * textureRepeatWidth, textureHeight * textureRepeatHeight, 0, textureRepeatHeight, textureRepeatWidth, 0);
-                } else {
-                    _batch.draw(texture, (float) pos.getX(), (float) pos.getY(), (float) body.getWidth(), (float) body.getHeight());
+                    _batch.draw(texture, (float)pos.getX(), (float)pos.getY(), textureWidth * textureRepeatWidth, textureHeight * textureRepeatHeight, 0, textureRepeatHeight, textureRepeatWidth, 0);
+                }
+                else
+                {
+                    _batch.draw(texture, (float)pos.getX(), (float)pos.getY(), (float)body.getWidth(), (float)body.getHeight());
                 }
             }
         }
@@ -200,30 +227,35 @@ public class Game implements ApplicationListener {
         _batch.end();
     }
 
-    private void drawMouse() {
+    private void drawMouse()
+    {
         _shapeRenderer.setProjectionMatrix(_camera.combined);
         _shapeRenderer.begin(ShapeType.Filled);
         _shapeRenderer.setColor(1, 1, 0, 1);
-        _shapeRenderer.circle((float) _world.getGameData().getMousePosition().getX(), (float) _world.getGameData().getMousePosition().getY(), 7);
+        _shapeRenderer.circle((float)_world.getGameData().getMousePosition().getX(), (float)_world.getGameData().getMousePosition().getY(), 7);
         _shapeRenderer.end();
     }
 
-    private void drawFps() {
+    private void drawFps()
+    {
         Position pPosition = _world.getGameData().getPlayerPosition();
-        _font.draw(_batch, "fps: " + Gdx.graphics.getFramesPerSecond(), (float) (pPosition.getX() - 600), (float) (pPosition.getY() + 370)); // Need to create HUD
+        _font.draw(_batch, "fps: " + Gdx.graphics.getFramesPerSecond(), (float)(pPosition.getX() - 600), (float)(pPosition.getY() + 370)); // Need to create HUD
     }
 
     @Override
-    public void pause() {
+    public void pause()
+    {
 
     }
 
     @Override
-    public void resume() {
+    public void resume()
+    {
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
