@@ -16,6 +16,12 @@ public class Position implements Serializable
     private double _x;
     private double _y;
 
+    @Override
+    public String toString()
+    {
+        return "Position{" + "_x=" + _x + ", _y=" + _y + '}';
+    }
+
     public Position(double x, double y)
     {
         this._x = x;

@@ -31,6 +31,29 @@ public class GameData
     private Position _playerPosition = new Position(0, 0);
     private Body _playerBody = new Body(0, 0, Geometry.CIRCLE);
 
+    private boolean _grid[][];
+    private int _cellsize;
+
+    public int getCellsize()
+    {
+        return _cellsize;
+    }
+
+    public void setCellsize(int cellsize)
+    {
+        this._cellsize = cellsize;
+    }
+
+    public boolean[][] getGrid()
+    {
+        return _grid;
+    }
+
+    public void setGrid(boolean[][] grid)
+    {
+        this._grid = grid;
+    }
+
     public Position getMousePosition()
     {
         return _mousePosition;
