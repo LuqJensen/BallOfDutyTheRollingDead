@@ -14,9 +14,11 @@ import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Velocity;
 import dk.gruppeseks.bodtrd.common.interfaces.IEntityProcessor;
+import dk.gruppeseks.bodtrd.common.services.AISPI;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
 import java.util.HashMap;
 import java.util.Map;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,6 +35,8 @@ public class ZombiePlugin implements GamePluginSPI
     private World _world;
     private final int BASE_DIAMETER = 30;
     private final int DIAMETER_VARIABLE = 20;
+    public static AISPI _ai;
+    private final Lookup _lookup = Lookup.getDefault();
 
     @Override
     public void start(World world)
@@ -53,6 +57,13 @@ public class ZombiePlugin implements GamePluginSPI
 
         _processor = new ZombieProcessor(_zombies);
         _world.addProcessor(1, _processor);
+
+        _ai = _lookup.lookup(AISPI.class);
+        Position[] path = _ai.getPath(new Position(13, 17), new Position(167, 176), world);
+        for (Position pos : path)
+        {
+            System.out.println(pos);
+        }
     }
 
     @Override
