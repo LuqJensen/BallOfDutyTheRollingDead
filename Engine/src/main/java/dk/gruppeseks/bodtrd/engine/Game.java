@@ -18,6 +18,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import dk.gruppeseks.bodtrd.common.data.Entity;
 import dk.gruppeseks.bodtrd.common.data.GameData;
+import dk.gruppeseks.bodtrd.common.data.SoundAction;
+import dk.gruppeseks.bodtrd.common.data.SoundManager;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
 import dk.gruppeseks.bodtrd.common.data.World;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
@@ -26,6 +28,7 @@ import dk.gruppeseks.bodtrd.common.data.entityelements.View;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
 import dk.gruppeseks.bodtrd.common.services.MapSPI;
 import dk.gruppeseks.bodtrd.managers.GameInputManager;
+import dk.gruppeseks.bodtrd.managers.SoundPlayer;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,6 +42,7 @@ import org.openide.util.LookupListener;
  */
 public class Game implements ApplicationListener
 {
+
     private OrthographicCamera _camera;
     private final Lookup _lookup = Lookup.getDefault();
     private World _world;
@@ -80,7 +84,8 @@ public class Game implements ApplicationListener
         {
             plugin.start(_world);
         }
-
+        String path = "C:\\Users\\S\\Documents\\BOD3\\BallOfDutyTheRollingDead\\Common\\assets\\sounds\\JohnCena.mp3";
+        SoundManager.createSoundTask(path, SoundAction.LOOP);
         loadViews();
         loadBackground();
     }
@@ -161,6 +166,7 @@ public class Game implements ApplicationListener
 
     private void update()
     {
+        SoundPlayer.HandleSoundTasks();
         _world.getGameData().setMousePosition(Gdx.input.getX() + (int)(_camera.position.x - _camera.viewportWidth / 2),
                 -Gdx.input.getY() + Gdx.graphics.getHeight() + (int)(_camera.position.y - _camera.viewportHeight / 2));
         _world.update();
