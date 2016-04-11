@@ -9,7 +9,7 @@ package dk.gruppeseks.bodtrd.common.data;
  *
  * @author S
  */
-public enum SoundAction
+public enum AudioAction
 {
     PLAY, LOOP, STOP, PAUSE, RESUME, DISPOSE;
 }

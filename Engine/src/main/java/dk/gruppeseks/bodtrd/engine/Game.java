@@ -16,18 +16,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import dk.gruppeseks.bodtrd.common.data.AudioAction;
+import dk.gruppeseks.bodtrd.common.data.AudioManager;
+import dk.gruppeseks.bodtrd.common.data.AudioType;
 import dk.gruppeseks.bodtrd.common.data.Entity;
 import dk.gruppeseks.bodtrd.common.data.GameData;
-import dk.gruppeseks.bodtrd.common.data.SoundAction;
-import dk.gruppeseks.bodtrd.common.data.SoundManager;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
 import dk.gruppeseks.bodtrd.common.data.World;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.View;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
+import dk.gruppeseks.bodtrd.managers.AudioPlayer;
 import dk.gruppeseks.bodtrd.managers.GameInputManager;
-import dk.gruppeseks.bodtrd.managers.SoundPlayer;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,6 +50,7 @@ public class Game implements ApplicationListener
     private SpriteBatch _batch;
     private ShapeRenderer _shapeRenderer;
     private AssetManager _assetManager;
+    private AudioPlayer _audioPlayer;
     private Texture background;
     private BitmapFont _font;
 
@@ -59,6 +61,7 @@ public class Game implements ApplicationListener
         _shapeRenderer = new ShapeRenderer();
         _batch = new SpriteBatch();
         _assetManager = new AssetManager();
+        _audioPlayer = new AudioPlayer();
 
         GameData gameData = new GameData();
         _world = new World(gameData);
@@ -79,10 +82,10 @@ public class Game implements ApplicationListener
         {
             plugin.start(_world);
         }
-        String path = "C:\\Users\\S\\Documents\\BOD3\\BallOfDutyTheRollingDead\\Common\\assets\\sounds\\JohnCena.mp3";
-        SoundManager.createSoundTask(path, SoundAction.LOOP);
         loadViews();
         loadBackground();
+        _audioPlayer.loadAudio();
+        AudioManager.createSoundTask("JohnCena.mp3", AudioAction.PLAY, AudioType.MUSIC);
     }
 
     private final LookupListener lookupListener = new LookupListener()
@@ -161,11 +164,12 @@ public class Game implements ApplicationListener
 
     private void update()
     {
-        SoundPlayer.HandleSoundTasks();
         _world.getGameData().setMousePosition(Gdx.input.getX() + (int)(_camera.position.x - _camera.viewportWidth / 2),
                 -Gdx.input.getY() + Gdx.graphics.getHeight() + (int)(_camera.position.y - _camera.viewportHeight / 2));
         _world.update();
         _assetManager.update();
+        _audioPlayer.updateAudio();
+        _audioPlayer.handleAudioTaskQuery();
     }
 
     private void draw()
@@ -251,11 +255,12 @@ public class Game implements ApplicationListener
     @Override
     public void resume()
     {
+
     }
 
     @Override
     public void dispose()
     {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        _audioPlayer.disposeAudio();
     }
 }
