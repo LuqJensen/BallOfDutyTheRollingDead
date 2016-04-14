@@ -21,8 +21,10 @@ import dk.gruppeseks.bodtrd.common.data.GameData;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
 import dk.gruppeseks.bodtrd.common.data.World;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Health.Health;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.View;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Weapon;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
 import dk.gruppeseks.bodtrd.common.services.MapSPI;
 import dk.gruppeseks.bodtrd.managers.GameInputManager;
@@ -169,10 +171,14 @@ public class Game implements ApplicationListener
 
     private void draw()
     {
-        Position pPosition = _world.getGameData().getPlayerPosition();
-        Body pBody = _world.getGameData().getPlayerBody();
-        _camera.position.x = (float)(pPosition.getX() + pBody.getWidth() / 2);
-        _camera.position.y = (float)(pPosition.getY() + pBody.getHeight() / 2);
+        Entity p = _world.getGameData().getPlayer();       
+        if (p != null)
+        {
+            Position pPosition = p.get(Position.class);
+            Body pBody = p.get(Body.class);
+            _camera.position.x = (float)(pPosition.getX() + pBody.getWidth() / 2);
+            _camera.position.y = (float)(pPosition.getY() + pBody.getHeight() / 2);
+        }
 
         _camera.update();
         _batch.setProjectionMatrix(_camera.combined);
@@ -220,9 +226,11 @@ public class Game implements ApplicationListener
             }
         }
 
-        //Debug rendering
-//        drawMouse();
-        drawFps();
+        //HUD
+        if (p != null)
+        {
+            drawFps(p);
+       }
         _batch.end();
     }
 
@@ -235,10 +243,14 @@ public class Game implements ApplicationListener
         _shapeRenderer.end();
     }
 
-    private void drawFps()
+    private void drawFps(Entity p)
     {
-        Position pPosition = _world.getGameData().getPlayerPosition();
+        Position pPosition = p.get(Position.class);
+        Health pHealth = p.get(Health.class);
+        Weapon pWeapon = p.get(Weapon.class);
         _font.draw(_batch, "fps: " + Gdx.graphics.getFramesPerSecond(), (float)(pPosition.getX() - 600), (float)(pPosition.getY() + 370)); // Need to create HUD
+        _font.draw(_batch, "Hp: " + (int) pHealth.getHp() + "/" + (int) pHealth.getMaxHp(), (float)(pPosition.getX() - 600), (float)(pPosition.getY() + 350));
+        _font.draw(_batch, "Ammo: " + pWeapon.getCurrentMagazineSize() + "/" + pWeapon.getCurrentAmmunition(), (float)(pPosition.getX() - 600), (float)(pPosition.getY() + 330));
     }
 
     @Override

@@ -5,24 +5,26 @@
  */
 package dk.gruppeseks.bodtrd.common.data.entityelements.Health;
 
+import dk.gruppeseks.bodtrd.common.data.entityelements.Damage;
+
 /**
  *
  * @author Thanusaan
  */
 public class DamageInstance
 {
-    private double _damageAmount;
+    private Damage _damage;
     private int _ownerId;
 
-    public DamageInstance(double damageAmount, int ownerId)
+    public DamageInstance(Damage damage, int ownerId)
     {
-        this._damageAmount = damageAmount;
+        this._damage = damage;
         this._ownerId = ownerId;
     }
 
-    public double getDamageAmount()
+    public int getDamage()
     {
-        return _damageAmount;
+        return _damage.getDamage();
     }
 
     public int getOwnerId()

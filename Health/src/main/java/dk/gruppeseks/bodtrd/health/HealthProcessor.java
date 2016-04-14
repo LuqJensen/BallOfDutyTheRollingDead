@@ -49,8 +49,9 @@ public class HealthProcessor implements IEntityProcessor
     {
         for (DamageInstance di : h.getDamageInstances())
         {
-            h.setHp(h.getHp() - di.getDamageAmount());
+            h.setHp(h.getHp() - di.getDamage());
         }
+        h.getDamageInstances().clear();
     }
 
     private void regenHealth(Health h, double deltaTime)

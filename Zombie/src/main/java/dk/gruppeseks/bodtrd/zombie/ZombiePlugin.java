@@ -11,8 +11,11 @@ import dk.gruppeseks.bodtrd.common.data.GameData;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
 import dk.gruppeseks.bodtrd.common.data.World;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Damage;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Health.Health;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Velocity;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Weapon;
 import dk.gruppeseks.bodtrd.common.interfaces.IEntityProcessor;
 import dk.gruppeseks.bodtrd.common.services.AISPI;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
@@ -28,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GamePluginSPI.class)
 public class ZombiePlugin implements GamePluginSPI
 {
-    private static final String ZOMBIE_IMAGE_FILE_PATH = "../../../Zombie/src/main/java/dk/gruppeseks/bodtrd/zombie/assets/ball_green.png";
+    private static final String ZOMBIE_IMAGE_FILE_PATH = "../../../Zombie/src/main/java/dk/gruppeseks/bodtrd/zombie/assets/ball_zombie.png";
     private Map<Integer, Entity> _zombies;
     private IEntityProcessor _processor;
     private GameData _gameData;
@@ -83,7 +86,12 @@ public class ZombiePlugin implements GamePluginSPI
         entity.add(new Position(diameter * 2 + Math.random() * (_world.getMap().getWidth() - diameter * 2), diameter * 2 + Math.random() * (_world.getMap().getHeight() - diameter * 2)));
         entity.add(new Body(diameter, diameter, Body.Geometry.CIRCLE));
         entity.add(new Velocity());
+        entity.add(new Health(100, 0));
         entity.add(ViewManager.getView(ZOMBIE_IMAGE_FILE_PATH));
+        Weapon wep = new Weapon();
+        wep.setAttackSpeed(1.5f);
+        wep.setAttackDamage(new Damage(3));
+        entity.add(wep);
 
         return entity;
     }

@@ -23,8 +23,7 @@ public class GameData
 
     private Position _mousePosition = new Position(0, 0);
 
-    private Position _playerPosition = new Position(0, 0);
-    private Body _playerBody = new Body(0, 0, Geometry.CIRCLE);
+    private Entity _player;
 
     public Position getMousePosition()
     {
@@ -37,24 +36,14 @@ public class GameData
         _mousePosition.setY(y);
     }
 
-    public Body getPlayerBody()
+    public Entity getPlayer() 
     {
-        return _playerBody;
+        return _player;
     }
 
-    public void setPlayerBody(Body body)
+    public void setPlayer(Entity player) 
     {
-        this._playerBody = body;
-    }
-
-    public Position getPlayerPosition()
-    {
-        return _playerPosition;
-    }
-
-    public void setPlayerPosition(Position position)
-    {
-        this._playerPosition = position;
+        this._player = player;
     }
 
     public int getDisplayWidth()
