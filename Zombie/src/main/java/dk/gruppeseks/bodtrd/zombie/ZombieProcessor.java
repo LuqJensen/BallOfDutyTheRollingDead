@@ -67,7 +67,7 @@ public class ZombieProcessor implements IEntityProcessor
             {
                 if (velocity.getMagnitude() <= ATTACK_RANGE + (zombieBod.getWidth() / 2) + (playerBod.getWidth() / 2))
                 {
-                    attackPlayer(world, zombie);
+                    attackPlayer(world, zombie, player);
                 }
                 velocity.setMagnitude(MOVEMENT_SPEED);
             }
@@ -123,13 +123,13 @@ public class ZombieProcessor implements IEntityProcessor
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private void attackPlayer(World world, Entity zombie) 
+    private void attackPlayer(World world, Entity zombie, Entity player) 
     {
         Weapon zWep = zombie.get(Weapon.class);
 
         if (zWep.getAttackCooldown() <= 0)
         {
-            world.getGameData().getPlayer().get(Health.class).addDamageInstance(new DamageInstance(zWep.getAttackDamage(), zombie.getID()));
+            player.get(Health.class).addDamageInstance(new DamageInstance(zWep.getAttackDamage(), zombie.getID()));
             zWep.setAttackCooldown(zWep.getAttackSpeed());
         }
     }

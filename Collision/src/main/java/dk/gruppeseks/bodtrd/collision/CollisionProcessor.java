@@ -51,6 +51,10 @@ public class CollisionProcessor implements IEntityProcessor
                 {
                     continue;
                 }
+                if (ent.getState() == EntityState.DESTROYED)
+                {
+                    break;
+                }
                 if (CollisionHandler.isColliding(handled, ent))
                 {
                     handleCollision(handled, ent, entities);
@@ -77,10 +81,6 @@ public class CollisionProcessor implements IEntityProcessor
             }
             case PROJECTILE:
             {
-                if (ent.getState() == EntityState.DESTROYED)
-                {
-                    break;
-                }
                 if (ent.getType() == EntityType.ENEMY)
                 {
                     Owner o = handled.get(Owner.class);
@@ -102,7 +102,7 @@ public class CollisionProcessor implements IEntityProcessor
             }
             case ENEMY:
             {
-                if (ent.getType() == EntityType.PLAYER || ent.getType() == EntityType.ENEMY || ent.getType() == EntityType.WALL)
+                if (ent.get(CollisionData.class).getCollisionFlag() == CollisionFlags.CONCRETE)
                 {
                     calculateBounceResponse(handled, ent, entities);
                 }
