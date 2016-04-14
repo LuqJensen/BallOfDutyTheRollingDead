@@ -21,6 +21,7 @@ public class Weapon
     private float _attackSpeed;
     private boolean _isReloading;
     private float _attackCooldown;
+    private Damage _attackDamage;
 
     public float getAttackCooldown()
     {
@@ -127,4 +128,13 @@ public class Weapon
         this._isAttacking = isAttacking;
     }
 
+    public Damage getAttackDamage() 
+    {
+        return _attackDamage;
+    }
+
+    public void setAttackDamage(Damage attackDamage) 
+    {
+        this._attackDamage = attackDamage;
+    }
 }

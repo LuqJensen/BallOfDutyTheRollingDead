@@ -10,6 +10,7 @@ import dk.gruppeseks.bodtrd.common.data.EntityState;
 import dk.gruppeseks.bodtrd.common.data.EntityType;
 import dk.gruppeseks.bodtrd.common.data.World;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Damage;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Health.DamageInstance;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Health.Health;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Owner;
@@ -76,17 +77,22 @@ public class CollisionProcessor implements IEntityProcessor
             }
             case PROJECTILE:
             {
-                if (ent.getType() == EntityType.PLAYER)
+                if (ent.getState() == EntityState.DESTROYED)
+                {
+                    break;
+                }
+                if (ent.getType() == EntityType.ENEMY)
                 {
                     Owner o = handled.get(Owner.class);
                     if (o == null)
                     {
-                        ent.get(Health.class).addDamageInstance(new DamageInstance(10, 0));
+                        ent.get(Health.class).addDamageInstance(new DamageInstance(handled.get(Damage.class), 0));
                     }
                     else
                     {
-                        ent.get(Health.class).addDamageInstance(new DamageInstance(10, o.getId()));
+                        ent.get(Health.class).addDamageInstance(new DamageInstance(handled.get(Damage.class), o.getId()));
                     }
+                    handled.setState(EntityState.DESTROYED);
                 }
                 else if (ent.getType() == EntityType.WALL)
                 {
@@ -96,7 +102,7 @@ public class CollisionProcessor implements IEntityProcessor
             }
             case ENEMY:
             {
-                if (ent.getType() == EntityType.WALL)
+                if (ent.getType() == EntityType.PLAYER || ent.getType() == EntityType.ENEMY || ent.getType() == EntityType.WALL)
                 {
                     calculateBounceResponse(handled, ent, entities);
                 }

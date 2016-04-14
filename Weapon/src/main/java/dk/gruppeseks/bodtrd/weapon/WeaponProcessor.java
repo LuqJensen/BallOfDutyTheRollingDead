@@ -11,6 +11,7 @@ import dk.gruppeseks.bodtrd.common.data.ViewManager;
 import dk.gruppeseks.bodtrd.common.data.World;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body.Geometry;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Damage;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Owner;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Velocity;
@@ -88,6 +89,7 @@ public class WeaponProcessor implements IEntityProcessor
         bullet.add(position);
         bullet.add(velocity);
         bullet.add(body);
+        bullet.add(new Damage(wep.getAttackDamage().getDamage()));
         bullet.add(ViewManager.getView(WeaponPlugin.BULLET_IMAGE_FILE_PATH));
         bullet.add(new Owner(e.getID()));
         world.addEntity(bullet);

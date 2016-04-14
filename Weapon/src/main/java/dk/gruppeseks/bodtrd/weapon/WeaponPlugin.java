@@ -9,6 +9,7 @@ import dk.gruppeseks.bodtrd.common.data.Entity;
 import static dk.gruppeseks.bodtrd.common.data.EntityType.PLAYER;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
 import dk.gruppeseks.bodtrd.common.data.World;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Damage;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Weapon;
 import dk.gruppeseks.bodtrd.common.interfaces.IEntityProcessor;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
@@ -44,6 +45,7 @@ public class WeaponPlugin implements GamePluginSPI
             {
                 Weapon wep = new Weapon();
                 wep.setAttackSpeed(0.4f);
+                wep.setAttackDamage(new Damage(10));
                 wep.setMaxAmmunition(300);
                 wep.setCurrentAmmunition(wep.getMaxAmmunition());
                 wep.setMaxMagazineSize(30);
