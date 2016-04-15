@@ -13,6 +13,7 @@ public class View
 {
     private final String _imageFile;
     private final boolean _repeatImage;
+    private float[] _shape;
 
     public View(String path, boolean repeatImage)
     {
@@ -25,7 +26,18 @@ public class View
         return _imageFile;
     }
 
-    public boolean isRepeat() {
+    public boolean isRepeat()
+    {
         return _repeatImage;
+    }
+
+    public float[] getShape()
+    {
+        return _shape;
+    }
+
+    public void setShape(float[] shape)
+    {
+        this._shape = shape;
     }
 }

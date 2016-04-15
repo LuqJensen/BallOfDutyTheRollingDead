@@ -10,12 +10,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.utils.ShortArray;
 import dk.gruppeseks.bodtrd.common.data.Entity;
 import dk.gruppeseks.bodtrd.common.data.GameData;
 import dk.gruppeseks.bodtrd.common.data.ViewManager;
@@ -52,9 +59,21 @@ public class Game implements ApplicationListener
     private BitmapFont _font;
     private MapSPI _map;
 
+    private PolygonSpriteBatch _polyBatch;
+    private Texture _textureSolid;
+    private TextureRegion _textureRegion;
+    private Pixmap _pix;
+
     @Override
     public void create()
     {
+
+        _pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        _pix.setColor(1, 0.7f, 0.7f, .7f);
+        _pix.fill();
+        _textureSolid = new Texture(_pix);
+        _textureRegion = new TextureRegion(_textureSolid);
+        _polyBatch = new PolygonSpriteBatch();
         _font = new BitmapFont();
         _shapeRenderer = new ShapeRenderer();
         _batch = new SpriteBatch();
@@ -171,7 +190,7 @@ public class Game implements ApplicationListener
 
     private void draw()
     {
-        Entity p = _world.getGameData().getPlayer();       
+        Entity p = _world.getGameData().getPlayer();
         if (p != null)
         {
             Position pPosition = p.get(Position.class);
@@ -181,6 +200,7 @@ public class Game implements ApplicationListener
         }
 
         _camera.update();
+        _polyBatch.setProjectionMatrix(_camera.combined);
         _batch.setProjectionMatrix(_camera.combined);
         _batch.begin();
 
@@ -224,14 +244,33 @@ public class Game implements ApplicationListener
                     _batch.draw(texture, (float)pos.getX(), (float)pos.getY(), (float)body.getWidth(), (float)body.getHeight());
                 }
             }
+            if (view.getShape() != null)
+            {
+                drawFoV(view.getShape());
+            }
         }
 
         //HUD
         if (p != null)
         {
             drawFps(p);
-       }
+        }
+        _shapeRenderer.end();
         _batch.end();
+    }
+
+    private void drawFoV(float[] shape)
+    {
+        _batch.end();
+        EarClippingTriangulator triangulator = new EarClippingTriangulator();
+        ShortArray triangleIndices = triangulator.computeTriangles(shape);
+        PolygonRegion polyReg = new PolygonRegion(_textureRegion, shape, triangleIndices.toArray());
+        PolygonSprite polySprite = new PolygonSprite(polyReg);
+
+        _polyBatch.begin();
+        polySprite.draw(_polyBatch);
+        _polyBatch.end();
+        _batch.begin();
     }
 
     private void drawMouse()
@@ -249,7 +288,7 @@ public class Game implements ApplicationListener
         Health pHealth = p.get(Health.class);
         Weapon pWeapon = p.get(Weapon.class);
         _font.draw(_batch, "fps: " + Gdx.graphics.getFramesPerSecond(), (float)(pPosition.getX() - 600), (float)(pPosition.getY() + 370)); // Need to create HUD
-        _font.draw(_batch, "Hp: " + (int) pHealth.getHp() + "/" + (int) pHealth.getMaxHp(), (float)(pPosition.getX() - 600), (float)(pPosition.getY() + 350));
+        _font.draw(_batch, "Hp: " + (int)pHealth.getHp() + "/" + (int)pHealth.getMaxHp(), (float)(pPosition.getX() - 600), (float)(pPosition.getY() + 350));
         _font.draw(_batch, "Ammo: " + pWeapon.getCurrentMagazineSize() + "/" + pWeapon.getCurrentAmmunition(), (float)(pPosition.getX() - 600), (float)(pPosition.getY() + 330));
     }
 

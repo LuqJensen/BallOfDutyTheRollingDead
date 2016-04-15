@@ -53,7 +53,7 @@ public class Vector2
      */
     public void setX(double x)
     {
-        this.x = x;;
+        this.x = x;
     }
 
     /**
@@ -79,7 +79,7 @@ public class Vector2
      */
     public void setY(double y)
     {
-        this.y = y;;
+        this.y = y;
     }
 
     /**

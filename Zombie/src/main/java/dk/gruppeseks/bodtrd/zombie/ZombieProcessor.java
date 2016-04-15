@@ -13,11 +13,13 @@ import dk.gruppeseks.bodtrd.common.data.entityelements.Health.Health;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Path;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Velocity;
+import dk.gruppeseks.bodtrd.common.data.entityelements.View;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Weapon;
 import dk.gruppeseks.bodtrd.common.data.util.Vector2;
 import dk.gruppeseks.bodtrd.common.exceptions.NoPathException;
 import dk.gruppeseks.bodtrd.common.interfaces.IEntityProcessor;
 import dk.gruppeseks.bodtrd.common.services.AISPI;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -28,11 +30,14 @@ public class ZombieProcessor implements IEntityProcessor
 {
     private Map<Integer, Entity> _zombies;
     private AISPI _ai;
+    private World _world;
     private final int MOVEMENT_SPEED = 130;
     private final int AGGRO_RANGE = 500; // When it should start following a path towards the target.
     private final int DUMB_AI_RANGE = 80; // When it shouldnt follow a path but just go directly to the target.
     private final int ATTACK_RANGE = 10; // When it should attack the target
     private final int TIME_BETWEEN_PATH_UPDATE = 1500; // How many milliseconds between path update
+    private final int RAY_COUNT = 60;
+    private final int VISION_DISTANCE = 350;
 
     public ZombieProcessor(Map<Integer, Entity> zombies, AISPI ai)
     {
@@ -44,6 +49,7 @@ public class ZombieProcessor implements IEntityProcessor
     @Override
     public void process(World world)
     {
+        _world = world;
         Entity player = world.getGameData().getPlayer();
         Position playerPos = player.get(Position.class);
         Body playerBod = player.get(Body.class);
@@ -106,7 +112,7 @@ public class ZombieProcessor implements IEntityProcessor
             {
                 velocity.setMagnitude(0); // Should maybe roam about and not just stay still?
             }
-
+            rayCast(zombie);
             zombieVel.setVector(velocity);
         }
     }
@@ -132,5 +138,50 @@ public class ZombieProcessor implements IEntityProcessor
             player.get(Health.class).addDamageInstance(new DamageInstance(zWep.getAttackDamage(), zombie.getID()));
             zWep.setAttackCooldown(zWep.getAttackSpeed());
         }
+    }
+
+    private void rayCast(Entity zombie)
+    {
+        ArrayList<Float> shape = new ArrayList<>();
+        double rotSteps = 360 / RAY_COUNT;
+
+        for (int i = 0; i < RAY_COUNT; i++)
+        {
+            double rotAmount = rotSteps * i;
+            Vector2 ray = new Vector2(0, 1);
+            ray.setMagnitude(VISION_DISTANCE);
+            ray.rotateDegrees(rotAmount);
+            Position collision = getFirstCollision(ray, zombie.get(Position.class));
+            shape.add((float)collision.getX());
+            shape.add((float)collision.getY());
+        }
+        float[] floatShape = new float[shape.size()];
+        for (int i = 0; i < shape.size(); i++)
+        {
+            floatShape[i] = shape.get(i);
+        }
+
+        zombie.get(View.class).setShape(floatShape);
+    }
+
+    private Position getFirstCollision(Vector2 ray, Position start)
+    {
+        boolean[][] grid = _world.getMap().getGrid();
+        int cellSize = _world.getMap().getGridCellSize();
+
+        for (int i = 0; i < ray.getMagnitude(); i += 2)
+        {
+            Vector2 v = new Vector2(ray);
+            v.setMagnitude(i);
+            Position p = new Position(start, v);
+
+            int x = (int)p.getX() / cellSize;
+            int y = (int)p.getY() / cellSize;
+            if (x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && !grid[x][y])
+            {
+                return p;
+            }
+        }
+        return new Position(start, ray);    //No collision
     }
 }

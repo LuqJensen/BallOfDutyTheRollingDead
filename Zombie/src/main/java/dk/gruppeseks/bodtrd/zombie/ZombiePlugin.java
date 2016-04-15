@@ -52,7 +52,7 @@ public class ZombiePlugin implements GamePluginSPI
         _world = world;
         _zombies = new HashMap();
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 1; i++)
         {
             Entity zombie = createZombieEntity();
             _zombies.put(zombie.getID(), zombie);
