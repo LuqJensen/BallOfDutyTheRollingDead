@@ -5,8 +5,9 @@
  */
 package dk.gruppeseks.bodtrd.common.services;
 
+import dk.gruppeseks.bodtrd.common.data.Entity;
+import dk.gruppeseks.bodtrd.common.data.Path;
 import dk.gruppeseks.bodtrd.common.data.World;
-import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.exceptions.NoPathException;
 
 /**
@@ -15,6 +16,6 @@ import dk.gruppeseks.bodtrd.common.exceptions.NoPathException;
  */
 public interface AISPI
 {
-    public Position[] getPath(Position start, Position goal, World world) throws NoPathException;
+    public Path getPath(Entity entity, Entity target, World world) throws NoPathException;
 
 }

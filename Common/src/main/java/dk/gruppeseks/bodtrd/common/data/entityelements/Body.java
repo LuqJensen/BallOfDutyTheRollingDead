@@ -5,6 +5,8 @@
  */
 package dk.gruppeseks.bodtrd.common.data.entityelements;
 
+import dk.gruppeseks.bodtrd.common.data.util.Vector2;
+
 /**
  *
  * @author Thanusaan
@@ -14,6 +16,7 @@ public class Body
     private int _height;
     private int _width;
     private Geometry _geometry;
+    private Vector2 _orientation;
 
     public enum Geometry
     {
@@ -56,4 +59,15 @@ public class Body
     {
         this._width = width;
     }
+
+    public Vector2 getOrientation()
+    {
+        return _orientation;
+    }
+
+    public void setOrientation(Vector2 _orientation)
+    {
+        this._orientation = new Vector2(_orientation);
+    }
+
 }

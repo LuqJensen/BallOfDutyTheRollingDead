@@ -4,6 +4,8 @@ import dk.gruppeseks.bodtrd.common.data.Action;
 import dk.gruppeseks.bodtrd.common.data.ActionHandler;
 import dk.gruppeseks.bodtrd.common.data.Entity;
 import dk.gruppeseks.bodtrd.common.data.World;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Velocity;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Weapon;
 import dk.gruppeseks.bodtrd.common.data.util.Vector2;
@@ -61,6 +63,14 @@ public class PlayerProcessor implements IEntityProcessor
         {
             wep.setReloading(true);
         }
+
+        Position p = _player.get(Position.class);
+        Body b = _player.get(Body.class);
+        Position center = new Position(p.getX() + b.getWidth() / 2, p.getY() + b.getHeight() / 2);
+        Position mousePos = world.getGameData().getMousePosition();
+        Vector2 orientation = new Vector2(mousePos.getX() - center.getX(), mousePos.getY() - center.getY()).setMagnitude(b.getWidth() / 2);
+
+        b.setOrientation(orientation);
     }
 
     @Override

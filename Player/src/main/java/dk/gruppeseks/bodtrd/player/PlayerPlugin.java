@@ -27,6 +27,7 @@ public class PlayerPlugin implements GamePluginSPI
     private IEntityProcessor _processor;
     private GameData _gameData;
     private World _world;
+    private static final int DIAMETER = 50;
 
     @Override
     public void start(World world)
@@ -61,11 +62,24 @@ public class PlayerPlugin implements GamePluginSPI
         entity.setType(EntityType.PLAYER);
         entity.setState(EntityState.ALIVE);
 
-        entity.add(new Position(200, 100));
-        entity.add(new Body(50, 50, Geometry.CIRCLE));
+        Position newPosition = null;
+        boolean[][] grid = _world.getMap().getGrid();
+        int cellSize = _world.getMap().getGridCellSize();
+        while (newPosition == null)
+        {
+            newPosition = new Position(DIAMETER * 2 + Math.random() * (_world.getMap().getWidth() - DIAMETER * 4), DIAMETER * 2 + Math.random() * (_world.getMap().getHeight() - DIAMETER * 4));
+            int x = (int)newPosition.getX() / cellSize;
+            int y = (int)newPosition.getY() / cellSize;
+            if (x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && !grid[x][y])
+            {
+                newPosition = null;
+            }
+        }
+        entity.add(newPosition);
+        entity.add(new Body(DIAMETER, DIAMETER, Geometry.CIRCLE));
         entity.add(new Velocity());
         entity.add(ViewManager.getView(PLAYER_IMAGE_FILE_PATH));
-        entity.add(new Health(100, 3));
+        entity.add(new Health(100, 1));
 
         return entity;
     }

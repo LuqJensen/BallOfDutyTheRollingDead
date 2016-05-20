@@ -30,3 +30,5 @@ nb-configuration.xml
 /LifeState/target/
 /Zombie/target/
 /AI/target/
+/AIAS/target/
+/AIFoV/target/

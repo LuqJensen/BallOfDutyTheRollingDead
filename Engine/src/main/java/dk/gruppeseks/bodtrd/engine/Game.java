@@ -38,6 +38,7 @@ import dk.gruppeseks.bodtrd.common.data.entityelements.AIData;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Body;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Health.Health;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
+import dk.gruppeseks.bodtrd.common.data.entityelements.Velocity;
 import dk.gruppeseks.bodtrd.common.data.entityelements.View;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Weapon;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
@@ -64,6 +65,7 @@ public class Game implements ApplicationListener
     private World _world;
     private Set<GamePluginSPI> _gamePlugins = ConcurrentHashMap.newKeySet();
     private Lookup.Result<GamePluginSPI> _result;
+    private Lookup.Result<MapSPI> _mapResult;
     private SpriteBatch _batch;
     private ShapeRenderer _shapeRenderer;
     private AssetManager _assetManager;
@@ -102,6 +104,9 @@ public class Game implements ApplicationListener
         _hudCamera.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
         _hudCamera.update();
 
+        _mapResult = _lookup.lookupResult(MapSPI.class);
+        _mapResult.addLookupListener(mapLookupListener);
+
         _map = _lookup.lookup(MapSPI.class);
         _map.generateMap(_world);
 
@@ -109,6 +114,7 @@ public class Game implements ApplicationListener
 
         _result = _lookup.lookupResult(GamePluginSPI.class);
         _result.addLookupListener(lookupListener);
+
         _gamePlugins.addAll(_result.allInstances());
 
         for (GamePluginSPI plugin : _gamePlugins)
@@ -124,7 +130,20 @@ public class Game implements ApplicationListener
 
         AudioManager.playSound(BACKGROUND_MUSIC_FILE_PATH, AudioAction.LOOP);
     }
+    private final LookupListener mapLookupListener = new LookupListener()
+    {
+        @Override
+        public void resultChanged(LookupEvent le)
+        {
+            MapSPI newMap = _lookup.lookup(MapSPI.class);
 
+            if (newMap != null && _map != newMap)
+            {
+                _map = newMap;
+                _map.generateMap(_world);
+            }
+        }
+    };
     private final LookupListener lookupListener = new LookupListener()
     {
         @Override
@@ -260,6 +279,7 @@ public class Game implements ApplicationListener
         for (Entity e : _world.entities())
         {
             View view = e.get(View.class);
+            Velocity vel = e.get(Velocity.class);
             Body body = e.get(Body.class);
             Position pos = e.get(Position.class);
             Health health = e.get(Health.class);
@@ -309,15 +329,32 @@ public class Game implements ApplicationListener
                 }
             }
             AIData aiData = e.get(AIData.class);
-            if (aiData != null && aiData.getFoVShape() != null)
+            if (aiData != null)
             {
-//                drawFoV(aiData.getFoVShape());
+                if (aiData.getFoVShape() != null)
+                {
+                    drawFoV(aiData.getFoVShape());
+                }
+                if (aiData.getLatestKnownPosition() != null && vel.getVector().getMagnitude() > 0)
+                {
+                    drawLastKnown(aiData.getLatestKnownPosition());
+                }
+
             }
         }
         if (p != null)
         {
             drawHUD(p);
         }
+    }
+
+    private void drawLastKnown(Position lastKnown)
+    {
+        _shapeRenderer.setProjectionMatrix(_gameCamera.combined);
+        _shapeRenderer.begin(ShapeType.Filled);
+        _shapeRenderer.setColor(Color.CYAN);
+        _shapeRenderer.circle((float)lastKnown.getX(), (float)lastKnown.getY(), 10);
+        _shapeRenderer.end();
     }
 
     private void drawFoV(float[] shape)
@@ -330,6 +367,13 @@ public class Game implements ApplicationListener
         _polyBatch.begin();
         polySprite.draw(_polyBatch);
         _polyBatch.end();
+
+        _shapeRenderer.setProjectionMatrix(_gameCamera.combined);
+        _shapeRenderer.begin(ShapeType.Line);
+        _shapeRenderer.setColor(Color.BROWN);
+        _shapeRenderer.polygon(shape);
+        _shapeRenderer.end();
+
     }
 
     private void drawMouse()

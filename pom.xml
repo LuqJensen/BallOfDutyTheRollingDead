@@ -77,9 +77,10 @@
         <module>Health</module>
         <module>LifeState</module>
         <module>Zombie</module>
-        <module>AI</module>
         <module>ModuleBuilder</module>
         <module>application</module>
+        <module>AIAS</module>
+        <module>AIFoV</module>
     </modules>
 
     <properties>

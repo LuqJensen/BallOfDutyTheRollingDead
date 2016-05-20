@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Install: dk/gruppeseks/aifov/Installer.class
+OpenIDE-Module-Localizing-Bundle: dk/gruppeseks/aifov/Bundle.properties
+

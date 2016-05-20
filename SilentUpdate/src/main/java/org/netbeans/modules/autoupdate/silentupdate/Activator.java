@@ -20,7 +20,7 @@ public class Activator extends ModuleInstall
     @Override
     public void restored()
     {
-        exector.scheduleAtFixedRate(doCheck, 10000, 10000, TimeUnit.MILLISECONDS);
+        exector.scheduleAtFixedRate(doCheck, 4000, 4000, TimeUnit.MILLISECONDS);
     }
 
     private static final Runnable doCheck = () ->

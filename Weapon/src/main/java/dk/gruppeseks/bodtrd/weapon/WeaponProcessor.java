@@ -75,9 +75,8 @@ public class WeaponProcessor implements IEntityProcessor
         Body b = e.get(Body.class);
 
         Position center = new Position(p.getX() + b.getWidth() / 2, p.getY() + b.getHeight() / 2);
-        Position mousePos = world.getGameData().getMousePosition();
 
-        Vector2 orientation = new Vector2(mousePos.getX() - center.getX(), mousePos.getY() - center.getY()).setMagnitude(b.getWidth() / 2);
+        Vector2 orientation = new Vector2(b.getOrientation());
 
         Body body = new Body(15, 15, Geometry.CIRCLE);
         Position position = new Position(center.getX() + orientation.getX() - body.getWidth() / 2, center.getY() + orientation.getY() - body.getHeight() / 2);

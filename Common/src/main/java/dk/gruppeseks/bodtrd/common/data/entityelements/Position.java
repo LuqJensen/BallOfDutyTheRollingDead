@@ -23,6 +23,12 @@ public class Position implements Serializable
         return "Position{" + "_x=" + _x + ", _y=" + _y + '}';
     }
 
+    public Position(Position pos)
+    {
+        _x = pos.getX();
+        _y = pos.getY();
+    }
+
     /**
      * *
      * Constructs a position at the end of the vector (Vector starting point being the inputted position)

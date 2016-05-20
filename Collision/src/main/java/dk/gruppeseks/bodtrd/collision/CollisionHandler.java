@@ -133,7 +133,6 @@ public class CollisionHandler
      */
     private static boolean collisionCircleCircle(CollisionDAO responding, CollisionDAO other)
     {
-
         double dx = responding.centerX - other.centerX;
         double dy = responding.centerY - other.centerY;
         double respondingRadius = responding.height / 2;
@@ -152,10 +151,8 @@ public class CollisionHandler
      */
     public static boolean collisionCircleRectangle(CollisionDAO circ, CollisionDAO rect)
     {
-
         double circleDistanceX = Math.abs(rect.centerX - circ.centerX);
         double circleDistanceY = Math.abs(rect.centerY - circ.centerY);
-
         if (circleDistanceY >= (rect.height / 2 + circ.height / 2))
         {
             return false;
@@ -164,18 +161,37 @@ public class CollisionHandler
         {
             return false;
         }
-        if (circleDistanceY < (rect.height / 2))
+        if (circleDistanceY < rect.height / 2)
         {
             return true;
         }
-        if (circleDistanceX < (rect.width) / 2)
+        if (circleDistanceX < rect.width / 2)
         {
             return true;
         }
-        double cornerDistanceSq = Math.sqrt(
-                Math.pow((circleDistanceX - (rect.width / 2)), 2) + Math.pow((circleDistanceY - (rect.height / 2)), 2));
 
-        return (cornerDistanceSq < circ.height / 2);
+        double cornerX = rect.x;
+        double cornerY = rect.y;
+        if (circ.centerX > rect.x) // Means the circle center is on the right side of the square.
+        {
+            cornerX += rect.width; // We know the corner is on the right side.
+            if (circ.centerY > rect.y) // Means the circle center is below (Above in libgdx)
+            {
+                cornerY += rect.height;  // We know the corner is on the buttom.
+            }
+
+        }
+        else if (circ.centerX < rect.x) // Means the circle center is on the left side of the square.
+        {
+            if (circ.centerY > rect.y) // Means the circle center is below (Above in libgdx)
+            {
+                cornerY += rect.height; // We know the corner is on the buttom.
+            }
+        }
+
+        Vector2 cornerToCircCenter = new Vector2(new Position(cornerX, cornerY), new Position(circ.centerX, circ.centerY));
+
+        return (cornerToCircCenter.getMagnitude() < circ.height / 2);
     }
 
     /**
@@ -284,11 +300,12 @@ public class CollisionHandler
      */
     public static Position collisionResponseCircleCircle(CollisionDAO responding, CollisionDAO other)
     {
-        // http://ericleong.me/research/circle-circle/ Need this link for bullet bounce or similar.
+        Position centerResponding = new Position(responding.centerX, responding.centerY);
+        Position centerOther = new Position(other.centerX, other.centerY);
+        // Creates a vector from the respondings center to the others center.
+        Vector2 respondingToOther = new Vector2(centerResponding, centerOther);
 
-        Vector2 distanceBetweenObjects = new Vector2(responding.centerX - other.centerX, responding.centerY - other.centerY);
-        distanceBetweenObjects.setMagnitude(responding.height / 2 + other.height / 2);
-        return new Position(other.centerX + distanceBetweenObjects.getX() - responding.width / 2, other.centerY + distanceBetweenObjects.getY() - responding.height / 2);
+        return new Position(other.centerX + respondingToOther.getX() - responding.width / 2, other.centerY + respondingToOther.getY() - responding.height / 2);
     }
 
     /**
@@ -297,65 +314,66 @@ public class CollisionHandler
      *
      * @param collided
      * The object that will be acting to the collision.
-     * @param other
+     * @param rect
      * The object the acting object collided with.
      * @return Returns the new suggested position of the collided object.
      */
-    public static Position collisionResponseCircleRectangle(CollisionDAO responding, CollisionDAO other)
+    public static Position collisionResponseCircleRectangle(CollisionDAO responding, CollisionDAO rect)
     {
         //Keep in mind, every logic in this method is under the assumption that the 2 objects are colliding.
 
         // If checked objects center is within the width of the square.
-        if (responding.centerX > other.x && responding.centerX < other.x + other.width)
+        if (responding.centerX > rect.x && responding.centerX < rect.x + rect.width)
         {
-            if (responding.centerY < other.centerY) // Means its closer to the top side (bottom side in libgdx)
+            if (responding.centerY < rect.centerY) // Means its closer to the top side (bottom side in libgdx)
             {
-                return new Position(responding.x, other.y - responding.height);
+                return new Position(responding.x, rect.y - responding.height);
             }
             else // Means its closer to the bottom side (top side in libgdx)
             {
-                return new Position(responding.x, other.y + other.height);
+                return new Position(responding.x, rect.y + rect.height);
             }
 
         }
-        else if (responding.centerY > other.y && responding.centerY < other.y + other.height) // If checked objects center is within the height of the square.
+        else if (responding.centerY > rect.y && responding.centerY < rect.y + rect.height) // If checked objects center is within the height of the square.
         {
-            if (responding.centerX < other.centerX) // Means its closer to the left side(
+            if (responding.centerX < rect.centerX) // Means its closer to the left side(
             {
-                return new Position(other.x - responding.width, responding.y);
+                return new Position(rect.x - responding.width, responding.y);
             }
             else // Means its closer to the right side.
             {
-                return new Position(other.x + other.width, responding.y);
+                return new Position(rect.x + rect.width, responding.y);
             }
         }
         // If the method has returned before now, the object has been moved to the nearest side of the square, relative to the circle center.
         // If not, it means the circles center is closer to a corner than it is to a side of the square.
 
         // The following code is trying to find the corner closest to the objects center. The object that needs a new position.
-        double cornerX = other.x;
-        double cornerY = other.y;
-        if (responding.centerX > other.x) // Means the circle center is on the right side of the square.
+        double cornerX = rect.x;
+        double cornerY = rect.y;
+        if (responding.centerX > rect.x) // Means the circle center is on the right side of the square.
         {
-            cornerX += other.width; // We know the corner is on the right side.
-            if (responding.centerY > other.y) // Means the circle center is below (Above in libgdx)
+            cornerX += rect.width; // We know the corner is on the right side.
+            if (responding.centerY > rect.y) // Means the circle center is below (Above in libgdx)
             {
-                cornerY += other.height;  // We know the corner is on the buttom.
+                cornerY += rect.height;  // We know the corner is on the buttom.
             }
 
         }
-        else if (responding.centerX < other.x) // Means the circle center is on the left side of the square.
+        else if (responding.centerX < rect.x) // Means the circle center is on the left side of the square.
         {
-            if (responding.centerY > other.y) // Means the circle center is below (Above in libgdx)
+            if (responding.centerY > rect.y) // Means the circle center is below (Above in libgdx)
             {
-                cornerY += other.height; // We know the corner is on the buttom.
+                cornerY += rect.height; // We know the corner is on the buttom.
             }
         }
         // http://math.stackexchange.com/questions/356792/how-to-find-nearest-point-on-line-of-rectangle-from-anywhere
-        Vector2 distanceBetweenObjects = new Vector2(responding.centerX - cornerX, responding.centerY - cornerY);
-        distanceBetweenObjects.setMagnitude(other.height / 2);
-        return new Position(cornerX + distanceBetweenObjects.getX() - other.width / 2,
-                cornerY + distanceBetweenObjects.getY() - other.height / 2);
+        // A vector from nearest corner to circle center.
+        Vector2 vectorBetweenObjects = new Vector2(responding.centerX - cornerX, responding.centerY - cornerY);
+        vectorBetweenObjects.setMagnitude(responding.height / 2);
+        return new Position(cornerX + vectorBetweenObjects.getX() - responding.width / 2,
+                cornerY + vectorBetweenObjects.getY() - responding.height / 2);
     }
 
 }

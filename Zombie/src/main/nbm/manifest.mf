@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
+OpenIDE-Module-Install: dk/gruppeseks/bodtrd/zombie/Installer.class
 OpenIDE-Module-Localizing-Bundle: dk/gruppeseks/bodtrd/zombie/Bundle.properties
 

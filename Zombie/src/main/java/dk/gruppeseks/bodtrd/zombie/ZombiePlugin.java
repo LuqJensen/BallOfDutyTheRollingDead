@@ -17,12 +17,15 @@ import dk.gruppeseks.bodtrd.common.data.entityelements.Health.Health;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Position;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Velocity;
 import dk.gruppeseks.bodtrd.common.data.entityelements.Weapon;
+import dk.gruppeseks.bodtrd.common.data.util.Vector2;
 import dk.gruppeseks.bodtrd.common.interfaces.IEntityProcessor;
 import dk.gruppeseks.bodtrd.common.services.AISPI;
 import dk.gruppeseks.bodtrd.common.services.GamePluginSPI;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -40,6 +43,7 @@ public class ZombiePlugin implements GamePluginSPI
     private final int BASE_DIAMETER = 30;
     private final int DIAMETER_VARIABLE = 20;
     public static AISPI _ai;
+    private Lookup.Result<AISPI> _result;
     private final Lookup _lookup = Lookup.getDefault();
 
     @Override
@@ -60,12 +64,24 @@ public class ZombiePlugin implements GamePluginSPI
             world.addEntity(zombie);
         }
 
+        _result = _lookup.lookupResult(AISPI.class);
+        _result.addLookupListener(lookupListener);
+
         _ai = _lookup.lookup(AISPI.class);
 
-        _processor = new ZombieProcessor(_zombies, _ai);
+        _processor = new ZombieProcessor(_zombies);
         _world.addProcessor(1, _processor);
 
     }
+
+    private final LookupListener lookupListener = new LookupListener()
+    {
+        @Override
+        public void resultChanged(LookupEvent le)
+        {
+            _ai = _lookup.lookup(AISPI.class);
+        }
+    };
 
     @Override
     public void stop()
@@ -84,8 +100,25 @@ public class ZombiePlugin implements GamePluginSPI
         Entity entity = new Entity();
         entity.setType(EntityType.ENEMY);
         int diameter = (int)(BASE_DIAMETER + Math.random() * DIAMETER_VARIABLE);
-        entity.add(new Position(diameter + Math.random() * (_world.getMap().getWidth() - diameter * 2), diameter + Math.random() * (_world.getMap().getHeight() - diameter * 2)));
-        entity.add(new Body(diameter, diameter, Body.Geometry.CIRCLE));
+
+        Position newPosition = null;
+        boolean[][] grid = _world.getMap().getGrid();
+        int cellSize = _world.getMap().getGridCellSize();
+        while (newPosition == null)
+        {
+            newPosition = new Position(diameter * 2 + Math.random() * (_world.getMap().getWidth() - diameter * 4), diameter * 2 + Math.random() * (_world.getMap().getHeight() - diameter * 4));
+            int x = (int)newPosition.getX() / cellSize;
+            int y = (int)newPosition.getY() / cellSize;
+            if (x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && !grid[x][y])
+            {
+                newPosition = null;
+            }
+        }
+
+        entity.add(newPosition);
+        Body body = new Body(diameter, diameter, Body.Geometry.CIRCLE);
+        body.setOrientation(new Vector2(0, 1));
+        entity.add(body);
         entity.add(new Velocity());
         entity.add(new Health(100, 0));
         entity.add(new AIData());

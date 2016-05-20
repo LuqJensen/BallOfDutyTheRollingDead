@@ -132,6 +132,7 @@ public class Vector2
      */
     public double scalarProduct(Vector2 multiplier)
     {
+
         return this.x * multiplier.getX() + this.y * multiplier.getY();
     }
 
@@ -323,6 +324,11 @@ public class Vector2
         this.normalize();
         this.scalarMultiply(i);
         return this;
+    }
+
+    public double projectionOn(Vector2 axis)
+    {
+        return scalarProduct(Vector2.normalize(axis));
     }
 
 }

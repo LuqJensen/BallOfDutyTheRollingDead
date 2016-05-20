@@ -70,6 +70,7 @@ public class CollisionProcessor implements IEntityProcessor
                 if (CollisionHandler.isColliding(handled, ent))
                 {
                     handleCollision(handled, ent, entities, world);
+                    break;
                 }
             }
         }
@@ -128,15 +129,14 @@ public class CollisionProcessor implements IEntityProcessor
         }
     }
 
-    private void calculateBounceResponse(Entity e1, Entity e2, Collection<Entity> entities)
+    private void calculateBounceResponse(Entity handled, Entity e2, Collection<Entity> entities)
     {
+        Position handledPos = handled.get(Position.class);
+        Position firstResponse = CollisionHandler.collisionResponse(handled, e2);
+        handledPos.setX(firstResponse.getX());
+        handledPos.setY(firstResponse.getY());
 
-        Position firstPos = CollisionHandler.collisionResponse(e1, e2);
-        Position handledPos = e1.get(Position.class);
-        handledPos.setX(firstPos.getX());
-        handledPos.setY(firstPos.getY());
-
-        for (Entity e3 : entities) // Checks if it collides with anything.
+        for (Entity e3 : entities) // Checks if it collides with anything after the first correction.
         {
             if (e3.getState() == EntityState.DESTROYED)
             {
@@ -144,42 +144,18 @@ public class CollisionProcessor implements IEntityProcessor
             }
             CollisionData e3Data = e3.get(CollisionData.class);
 
-            if (e3.getID() == e1.getID() || e3.getID() == e2.getID() || e3Data == null)
+            if (e3.getID() == handled.getID() || e3.getID() == e2.getID() || e3Data == null)
             {
                 continue;
             }
-            if (CollisionHandler.isColliding(e1, e3))
+            if (CollisionHandler.isColliding(handled, e3)) // If it collides with anything -> new response
             {
-                for (Entity e4 : entities)
-                {
-                    if (e4.getState() == EntityState.DESTROYED)
-                    {
-                        continue;
-                    }
-                    CollisionData e4Data = e4.get(CollisionData.class);
-
-                    if (e4.getID() == e1.getID() || e4.getID() == e2.getID()
-                            || e4.getID() == e3.getID() || e4Data == null)
-                    {
-                        continue;
-                    }
-                    if (CollisionHandler.isColliding(e1, e4))
-                    {
-                        double startX = handledPos.getX();
-                        double startY = handledPos.getY();
-
-                        handledPos.setX(startX);
-                        handledPos.setY(startY); // If it even collides after a third collision correction, then dont do any corrections at all.
-                        break;
-                    }
-
-                }
-                // if it doesnt collide with a third object after the second collision correction, put it to the secondcalculated position.
-                Position response = CollisionHandler.collisionResponse(e1, e3);
+                boolean collidedWithThird = false;
+                Position response = CollisionHandler.collisionResponse(handled, e3);
                 handledPos.setX(response.getX());
                 handledPos.setY(response.getY());
+                break;
             }
-            break;
         }
     }
 
